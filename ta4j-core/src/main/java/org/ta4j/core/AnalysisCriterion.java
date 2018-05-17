@@ -57,22 +57,7 @@ public interface AnalysisCriterion {
      * @param strategies a list of strategies
      * @return the best strategy (among the provided ones) according to the criterion
      */
-    default Strategy chooseBest(TimeSeriesManager manager, List<Strategy> strategies) {
-
-        Strategy bestStrategy = strategies.get(0);
-        Num bestCriterionValue = calculate(manager.getTimeSeries(), manager.run(bestStrategy));
-
-        for (int i = 1; i < strategies.size(); i++) {
-            Strategy currentStrategy = strategies.get(i);
-            Num currentCriterionValue = calculate(manager.getTimeSeries(), manager.run(currentStrategy));
-
-            if (betterThan(currentCriterionValue, bestCriterionValue)) {
-                bestStrategy = currentStrategy;
-                bestCriterionValue = currentCriterionValue;
-            }
-        }
-        return bestStrategy;
-    }
+    Strategy chooseBest(TimeSeriesManager manager, List<Strategy> strategies);
 
     /**
      * @param criterionValue1 the first value

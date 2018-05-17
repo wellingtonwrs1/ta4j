@@ -23,7 +23,7 @@
  *******************************************************************************/
 package org.ta4j.core.num;
 
-import java.util.function.Function;
+import org.ta4j.core.Function;
 
 /**
  * Representation of NaN
@@ -200,7 +200,23 @@ public class NaN implements Num {
 
     @Override
     public Function<Number, Num> function() {
-        return number -> NaN;
+        return new Function<Number, Num>() {
+
+            @Override
+            public Num apply(Number input) {
+                return numOf(input);
+            }
+        };
+    }
+
+    @Override
+    public Num numOf(Number value) {
+        return NaN;
+    }
+
+    @Override
+    public Num numOf(String string, int precision) {
+        return NaN;
     }
 
     @Override

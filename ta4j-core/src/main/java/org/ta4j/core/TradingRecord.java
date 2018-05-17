@@ -29,8 +29,6 @@ import org.ta4j.core.num.Num;
 import java.io.Serializable;
 import java.util.List;
 
-import static org.ta4j.core.num.NaN.NaN;
-
 
 /**
  * A history/record of a trading session.
@@ -53,10 +51,7 @@ public interface TradingRecord extends Serializable {
      * Operates an order in the trading record.
      * @param index the index to operate the order
      */
-    default void operate(int index) {
-        operate(index, NaN, NaN);
-    }
-    
+    void operate(int index);
     /**
      * Operates an order in the trading record.
      * @param index the index to operate the order
@@ -70,9 +65,7 @@ public interface TradingRecord extends Serializable {
      * @param index the index to operate the entry
      * @return true if the entry has been operated, false otherwise
      */
-    default boolean enter(int index) {
-        return enter(index, NaN, NaN);
-    }
+    boolean enter(int index);
     
     /**
      * Operates an entry order in the trading record.
@@ -88,9 +81,7 @@ public interface TradingRecord extends Serializable {
      * @param index the index to operate the exit
      * @return true if the exit has been operated, false otherwise
      */
-    default boolean exit(int index) {
-        return exit(index, NaN, NaN);
-    }
+    boolean exit(int index);
     
     /**
      * Operates an exit order in the trading record.
@@ -104,9 +95,7 @@ public interface TradingRecord extends Serializable {
     /**
      * @return true if no trade is open, false otherwise
      */
-    default boolean isClosed() {
-        return !getCurrentTrade().isOpened();
-    }
+    boolean isClosed();
     
     /**
      * @return the recorded trades
@@ -116,20 +105,12 @@ public interface TradingRecord extends Serializable {
     /**
      * @return the number of recorded trades
      */
-    default int getTradeCount() {
-        return getTrades().size();
-    }
+    int getTradeCount();
     
     /**
      * @return the last trade recorded
      */
-    default Trade getLastTrade() {
-    	List<Trade> trades = getTrades();
-        if (!trades.isEmpty()) {
-            return trades.get(trades.size() - 1);
-        }
-        return null;
-    }
+    Trade getLastTrade();
     
     /**
      * @return the last order recorded

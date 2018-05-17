@@ -30,7 +30,7 @@ import org.ta4j.core.TradingRecord;
  * A one-shot rule.<p />
  * Satisfied the first time it's checked then never again.
  */
-public class JustOnceRule extends AbstractRule {
+public class JustOnceRule extends AbstractRule{
     
     private boolean satisfied = false;
     private final Rule rule;

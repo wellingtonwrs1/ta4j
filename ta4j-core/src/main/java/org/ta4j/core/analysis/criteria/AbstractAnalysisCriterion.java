@@ -24,6 +24,11 @@
 package org.ta4j.core.analysis.criteria;
 
 import org.ta4j.core.AnalysisCriterion;
+import org.ta4j.core.Strategy;
+import org.ta4j.core.TimeSeriesManager;
+import org.ta4j.core.num.Num;
+
+import java.util.List;
 
 /**
  * An abstract analysis criterion.
@@ -39,5 +44,27 @@ public abstract class AbstractAnalysisCriterion implements AnalysisCriterion {
             sb.append(tokens[i]).append(' ');
         }
         return sb.toString().trim();
+    }
+
+    /**
+     * @param manager the time series manager
+     * @param strategies a list of strategies
+     * @return the best strategy (among the provided ones) according to the criterion
+     */
+    public Strategy chooseBest(TimeSeriesManager manager, List<Strategy> strategies) {
+
+        Strategy bestStrategy = strategies.get(0);
+        Num bestCriterionValue = calculate(manager.getTimeSeries(), manager.run(bestStrategy));
+
+        for (int i = 1; i < strategies.size(); i++) {
+            Strategy currentStrategy = strategies.get(i);
+            Num currentCriterionValue = calculate(manager.getTimeSeries(), manager.run(currentStrategy));
+
+            if (betterThan(currentCriterionValue, bestCriterionValue)) {
+                bestStrategy = currentStrategy;
+                bestCriterionValue = currentCriterionValue;
+            }
+        }
+        return bestStrategy;
     }
 }

@@ -38,7 +38,7 @@ import static org.ta4j.core.num.NaN.NaN;
  * and the previous (n-th) value of the {@link Indicator indicator} is between the values of
  * maxSlope or/and minSlope. It can test both, positive and negative slope.
  */
-public class InSlopeRule extends AbstractRule {
+public class InSlopeRule extends AbstractRule{
 
     /** The actual indicator */
     private Indicator<Num> ref;

@@ -135,14 +135,19 @@ public class BaseStrategy implements Strategy {
 
     @Override
     public boolean shouldEnter(int index, TradingRecord tradingRecord) {
-        boolean enter = Strategy.super.shouldEnter(index, tradingRecord);
+        boolean enter = !isUnstableAt(index) && getEntryRule().isSatisfied(index, tradingRecord);
         traceShouldEnter(index, enter);
         return enter;
     }
 
     @Override
+    public boolean shouldExit(int index) {
+        return shouldExit(index, null);
+    }
+
+    @Override
     public boolean shouldExit(int index, TradingRecord tradingRecord) {
-        boolean exit = Strategy.super.shouldExit(index, tradingRecord);
+        boolean exit = !isUnstableAt(index) && getExitRule().isSatisfied(index, tradingRecord);
         traceShouldExit(index, exit);
         return exit;
     }
@@ -192,5 +197,29 @@ public class BaseStrategy implements Strategy {
      */
     protected void traceShouldExit(int index, boolean exit) {
         log.trace(">>> {}#shouldExit({}): {}", className, index, exit);
+    }
+
+    /**
+     * @param index the bar index
+     * @param tradingRecord the potentially needed trading history
+     * @return true to recommend an order, false otherwise (no recommendation)
+     */
+    public boolean shouldOperate(int index, TradingRecord tradingRecord) {
+        Trade trade = tradingRecord.getCurrentTrade();
+        if (trade.isNew()) {
+            return shouldEnter(index, tradingRecord);
+        } else if (trade.isOpened()) {
+            return shouldExit(index, tradingRecord);
+        }
+        return false;
+    }
+
+
+    /**
+     * @param index the bar index
+     * @return true to recommend to enter, false otherwise
+     */
+    public boolean shouldEnter(int index) {
+        return shouldEnter(index, null);
     }
 }

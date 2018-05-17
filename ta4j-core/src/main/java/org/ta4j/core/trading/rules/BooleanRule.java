@@ -30,7 +30,7 @@ import org.ta4j.core.TradingRecord;
  * </p>
  * Satisfied when it has been initialized with true.
  */
-public class BooleanRule extends AbstractRule {
+public class BooleanRule extends AbstractRule{
 
     /** An always-true rule */
     public static final BooleanRule TRUE = new BooleanRule(true);

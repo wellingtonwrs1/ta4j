@@ -32,7 +32,7 @@ import org.ta4j.core.TradingRecord;
  * Satisfied when the two provided rules are satisfied as well.<br>
  * Warning: the second rule is not tested if the first rule is not satisfied.
  */
-public class AndRule extends AbstractRule {
+public class AndRule extends AbstractRule{
 
     private Rule rule1;
     

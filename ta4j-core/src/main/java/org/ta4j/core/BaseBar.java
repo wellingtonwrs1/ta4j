@@ -26,10 +26,6 @@ package org.ta4j.core;
 import org.ta4j.core.num.Num;
 
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.function.Function;
 
 /**
  * Base implementation of a {@link Bar}.
@@ -37,13 +33,18 @@ import java.util.function.Function;
  */
 public class BaseBar implements Bar {
 
+    public static long DURATION_DAY = 86400l;
+    public static long DURATION_HOUR = 3600;
+    public static long DURATION_WEEK = 604800;
+
+    //TODO javadoc: we are using unix timestamp here (long)
 	private static final long serialVersionUID = 8038383777467488147L;
 	/** Time period (e.g. 1 day, 15 min, etc.) of the bar */
-    private Duration timePeriod;
+    private long timePeriod;
     /** End time of the bar */
-    private ZonedDateTime endTime;
+    private long endTime;
     /** Begin time of the bar */
-    private ZonedDateTime beginTime;
+    private long beginTime;
     /** Open price of the period */
     private Num openPrice = null;
     /** Close price of the period */
@@ -65,11 +66,10 @@ public class BaseBar implements Bar {
      * @param timePeriod the time period
      * @param endTime the end time of the bar period
      */
-    public BaseBar(Duration timePeriod, ZonedDateTime endTime, Function<Number, Num> numFunction) {
-        checkTimeArguments(timePeriod, endTime);
+    public BaseBar(long timePeriod, long endTime, Function<Number, Num> numFunction) {
         this.timePeriod = timePeriod;
         this.endTime = endTime;
-        this.beginTime = endTime.minus(timePeriod);
+        this.beginTime = endTime - timePeriod;
         this.volume = numFunction.apply(0);
         this.amount = numFunction.apply(0);
     }
@@ -83,7 +83,7 @@ public class BaseBar implements Bar {
      * @param closePrice the close price of the bar period
      * @param volume the volume of the bar period
      */
-    public BaseBar(ZonedDateTime endTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume, Function<Number, Num> numFunction) {
+    public BaseBar(long endTime, double openPrice, double highPrice, double lowPrice, double closePrice, double volume, Function<Number, Num> numFunction) {
         this(endTime, numFunction.apply(openPrice),
                 numFunction.apply(highPrice),
                 numFunction.apply(lowPrice),
@@ -100,7 +100,7 @@ public class BaseBar implements Bar {
      * @param closePrice the close price of the bar period
      * @param volume the volume of the bar period
      */
-    public BaseBar(ZonedDateTime endTime, String openPrice, String highPrice, String lowPrice, String closePrice, String volume, Function<Number, Num> numFunction) {
+    public BaseBar(long endTime, String openPrice, String highPrice, String lowPrice, String closePrice, String volume, Function<Number, Num> numFunction) {
         this(endTime, numFunction.apply(new BigDecimal(openPrice)),
                 numFunction.apply(new BigDecimal(highPrice)),
                 numFunction.apply(new BigDecimal(lowPrice)),
@@ -117,8 +117,8 @@ public class BaseBar implements Bar {
      * @param closePrice the close price of the bar period
      * @param volume the volume of the bar period
      */
-    public BaseBar(ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume, Num amount) {
-        this(Duration.ofDays(1), endTime, openPrice, highPrice, lowPrice, closePrice, volume, amount);
+    public BaseBar(long endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume, Num amount) {
+        this(DURATION_DAY, endTime, openPrice, highPrice, lowPrice, closePrice, volume, amount);
     }
 
 
@@ -133,11 +133,10 @@ public class BaseBar implements Bar {
      * @param volume the volume of the bar period
      * @param amount the amount of the bar period
      */
-    public BaseBar(Duration timePeriod, ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume, Num amount) {
-        checkTimeArguments(timePeriod, endTime);
+    public BaseBar(long timePeriod, long endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume, Num amount) {
         this.timePeriod = timePeriod;
         this.endTime = endTime;
-        this.beginTime = endTime.minus(timePeriod);
+        this.beginTime = endTime - timePeriod; // TODO check
         this.openPrice = openPrice;
         this.maxPrice = highPrice;
         this.minPrice = lowPrice;
@@ -198,22 +197,39 @@ public class BaseBar implements Bar {
     /**
      * @return the time period of the bar
      */
-    public Duration getTimePeriod() {
+    public long getTimePeriod() {
         return timePeriod;
     }
 
     /**
      * @return the begin timestamp of the bar period
      */
-    public ZonedDateTime getBeginTime() {
+    public long getBeginTime() {
         return beginTime;
     }
 
     /**
      * @return the end timestamp of the bar period
      */
-    public ZonedDateTime getEndTime() {
+    public long getEndTime() {
         return endTime;
+    }
+
+    @Override
+    public boolean inPeriod(long timestamp) {
+        return  !(timestamp < getBeginTime()) && (timestamp < getEndTime());
+    }
+
+    @Override
+    public String getDateName() {
+        //TODO implement
+        return null;
+    }
+
+    @Override
+    public String getSimpleDateName() {
+        //TODO implement
+        return null;
     }
 
     /**
@@ -227,6 +243,36 @@ public class BaseBar implements Bar {
         volume = volume.plus(tradeVolume);
         amount = amount.plus(tradeVolume.multipliedBy(tradePrice));
         trades++;
+    }
+
+    /**
+     * Adds a trade at the end of bar period.
+     * @param tradeVolume the traded volume
+     * @param tradePrice the price
+     * @deprecated use corresponding function of TimeSeries
+     */
+    @Deprecated
+    public void addTrade(double tradeVolume, double tradePrice, Function<Number, Num> numFunction) {
+        addTrade(numFunction.apply(tradeVolume),numFunction.apply(tradePrice));
+    }
+
+    /**
+     * Adds a trade at the end of bar period.
+     * @param tradeVolume the traded volume
+     * @param tradePrice the price
+     * @deprecated use corresponding function of TimeSeries
+     */
+    @Deprecated
+    public void addTrade(String tradeVolume, String tradePrice, Function<Number, Num> numFunction) {
+        addTrade(numFunction.apply(new BigDecimal(tradeVolume)), numFunction.apply(new BigDecimal(tradePrice)));
+    }
+
+    public void addPrice(String price, Function<Number, Num> numFunction){
+        addPrice(numFunction.apply(new BigDecimal(price)));
+    }
+
+    public void addPrice(Number price, Function<Number, Num> numFunction){
+        addPrice(numFunction.apply(price));
     }
 
     @Override
@@ -248,23 +294,28 @@ public class BaseBar implements Bar {
         }
     }
 
-    @Override
-    public String toString() {
-        return String.format("{end time: %1s, close price: %2$f, open price: %3$f, min price: %4$f, max price: %5$f, volume: %6$f}",
-                endTime.withZoneSameInstant(ZoneId.systemDefault()), closePrice.doubleValue(), openPrice.doubleValue(), minPrice.doubleValue(), maxPrice.doubleValue(), volume.doubleValue());
+    /**
+     * @return true if this is a bearish bar, false otherwise
+     */
+    public boolean isBearish() {
+        Num openPrice = getOpenPrice();
+        Num closePrice = getClosePrice();
+        return (openPrice != null) && (closePrice != null) && closePrice.isLessThan(openPrice);
     }
 
     /**
-     * @param timePeriod the time period
-     * @param endTime the end time of the bar
-     * @throws IllegalArgumentException if one of the arguments is null
+     * @return true if this is a bullish bar, false otherwise
      */
-    private static void checkTimeArguments(Duration timePeriod, ZonedDateTime endTime) {
-        if (timePeriod == null) {
-            throw new IllegalArgumentException("Time period cannot be null");
-        }
-        if (endTime == null) {
-            throw new IllegalArgumentException("End time cannot be null");
-        }
+    public boolean isBullish() {
+        Num openPrice = getOpenPrice();
+        Num closePrice = getClosePrice();
+        return (openPrice != null) && (closePrice != null) && openPrice.isLessThan(closePrice);
+    }
+
+    // TODO implement timestamp to human friendly string function
+    @Override
+    public String toString() {
+        return String.format("{end time: %1s, close price: %2$f, open price: %3$f, min price: %4$f, max price: %5$f, volume: %6$f}",
+                endTime, closePrice.doubleValue(), openPrice.doubleValue(), minPrice.doubleValue(), maxPrice.doubleValue(), volume.doubleValue());
     }
 }

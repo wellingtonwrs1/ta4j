@@ -53,7 +53,7 @@ public class CashFlow implements Indicator<Num> {
      */
     public CashFlow(TimeSeries timeSeries, Trade trade) {
         this.timeSeries = timeSeries;
-        values = new ArrayList<>(Collections.singletonList(numOf(1)));
+        values = new ArrayList<Num>(Collections.singletonList(numOf(1)));
         calculate(trade);
         fillToTheEnd();
     }
@@ -65,7 +65,7 @@ public class CashFlow implements Indicator<Num> {
      */
     public CashFlow(TimeSeries timeSeries, TradingRecord tradingRecord) {
         this.timeSeries = timeSeries;
-        values = new ArrayList<>(Collections.singletonList(numOf(1)));
+        values = new ArrayList<Num>(Collections.singletonList(numOf(1)));
         calculate(tradingRecord);
 
         fillToTheEnd();

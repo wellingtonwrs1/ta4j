@@ -33,7 +33,7 @@ import org.ta4j.core.num.Num;
  * </p>
  * Satisfied when the value of the first {@link Indicator indicator} is strictly greater than the value of the second one.
  */
-public class OverIndicatorRule extends AbstractRule {
+public class OverIndicatorRule extends AbstractRule{
 
     /** The first indicator */
     private Indicator<Num> first;

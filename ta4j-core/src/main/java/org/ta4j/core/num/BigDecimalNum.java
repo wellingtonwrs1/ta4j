@@ -23,14 +23,14 @@
  *******************************************************************************/
 package org.ta4j.core.num;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.ta4j.core.Function;
+import org.ta4j.core.Objects;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Objects;
-import java.util.function.Function;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.ta4j.core.num.NaN.NaN;
 /**
@@ -58,7 +58,12 @@ public final class BigDecimalNum implements Num {
 
     @Override
     public Function<Number, Num> function() {
-        return BigDecimalNum::valueOf;
+        return new Function<Number, Num>() {
+            @Override
+            public Num apply(Number input) {
+                return valueOf(input);
+            }
+        };
     }
 
     /**
@@ -514,5 +519,55 @@ public final class BigDecimalNum implements Num {
     @Override
     public String toString(){
         return delegate.toString();
+    }
+
+    /**
+     * Transforms a {@link Number} into a new Num instance of this
+     * <code>Num</code> implementation
+     * @param value the Number to transform
+     * @return the corresponding Num implementation of the <code>value</code>
+     */
+    public Num numOf(Number value){
+        return function().apply(value);
+    }
+
+    /**
+     * Transforms a {@link String} into a new Num instance of this with a precision
+     * <code>Num</code> implementation
+     * @param string the String to transform
+     * @param precision the precision
+     * @return the corresponding Num implementation of the <code>value</code>
+     */
+    public Num numOf(String string, int precision) {
+        MathContext mathContext = new MathContext(precision, RoundingMode.HALF_UP);
+        return this.numOf(new BigDecimal(string, mathContext));
+    }
+
+    /**
+     * Only for NaN this should be true
+     * @return false if this implementation is not NaN
+     */
+    public boolean isNaN(){
+        return false;
+    }
+
+    /**
+     * Converts this {@code num} to a {@code double}.
+     * @return this {@code num} converted to a {@code double}
+     */
+    public double doubleValue(){
+        return getDelegate().doubleValue();
+    }
+
+    public int intValue(){
+        return getDelegate().intValue();
+    }
+
+    public long longValue(){
+        return getDelegate().longValue();
+    }
+
+    public float floatValue(){
+        return getDelegate().floatValue();
     }
 }

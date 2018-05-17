@@ -28,6 +28,8 @@ import org.ta4j.core.num.Num;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.ta4j.core.num.NaN.NaN;
+
 /**
  * Base implementation of a {@link TradingRecord}.
  * </p>
@@ -37,22 +39,22 @@ public class BaseTradingRecord implements TradingRecord {
 	private static final long serialVersionUID = -4436851731855891220L;
 
 	/** The recorded orders */
-    private List<Order> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<Order>();
     
     /** The recorded BUY orders */
-    private List<Order> buyOrders = new ArrayList<>();
+    private List<Order> buyOrders = new ArrayList<Order>();
     
     /** The recorded SELL orders */
-    private List<Order> sellOrders = new ArrayList<>();
+    private List<Order> sellOrders = new ArrayList<Order>();
     
     /** The recorded entry orders */
-    private List<Order> entryOrders = new ArrayList<>();
+    private List<Order> entryOrders = new ArrayList<Order>();
     
     /** The recorded exit orders */
-    private List<Order> exitOrders = new ArrayList<>();
+    private List<Order> exitOrders = new ArrayList<Order>();
     
     /** The recorded trades */
-    private List<Trade> trades = new ArrayList<>();
+    private List<Trade> trades = new ArrayList<Trade>();
 
     /** The entry type (BUY or SELL) in the trading session */
     private Order.OrderType startingType;
@@ -169,6 +171,58 @@ public class BaseTradingRecord implements TradingRecord {
     public Order getLastExit() {
         if (!exitOrders.isEmpty()) {
             return exitOrders.get(exitOrders.size() - 1);
+        }
+        return null;
+    }
+
+    /**
+     * Operates an order in the trading record.
+     * @param index the index to operate the order
+     */
+    public void operate(int index) {
+        operate(index, NaN, NaN);
+    }
+
+
+    /**
+     * Operates an entry order in the trading record.
+     * @param index the index to operate the entry
+     * @return true if the entry has been operated, false otherwise
+     */
+    public boolean enter(int index) {
+        return enter(index, NaN, NaN);
+    }
+
+    /**
+     * Operates an exit order in the trading record.
+     * @param index the index to operate the exit
+     * @return true if the exit has been operated, false otherwise
+     */
+    public boolean exit(int index) {
+        return exit(index, NaN, NaN);
+    }
+
+    /**
+     * @return true if no trade is open, false otherwise
+     */
+    public boolean isClosed() {
+        return !getCurrentTrade().isOpened();
+    }
+
+    /**
+     * @return the number of recorded trades
+     */
+    public int getTradeCount() {
+        return getTrades().size();
+    }
+
+    /**
+     * @return the last trade recorded
+     */
+    public Trade getLastTrade() {
+        List<Trade> trades = getTrades();
+        if (!trades.isEmpty()) {
+            return trades.get(trades.size() - 1);
         }
         return null;
     }

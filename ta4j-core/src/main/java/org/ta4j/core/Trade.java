@@ -27,7 +27,6 @@ import org.ta4j.core.Order.OrderType;
 import org.ta4j.core.num.Num;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import static org.ta4j.core.num.NaN.NaN;
 

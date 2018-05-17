@@ -26,12 +26,8 @@ package org.ta4j.core;
 import org.ta4j.core.num.Num;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.function.Function;
+
 
 /**
  * Sequence of {@link Bar bars} separated by a predefined period (e.g. 15 minutes, 1 day, etc.)
@@ -59,16 +55,12 @@ public interface TimeSeries extends Serializable {
     /**
      * @return the first bar of the series
      */
-    default Bar getFirstBar() {
-        return getBar(getBeginIndex());
-    }
+    Bar getFirstBar();
 
     /**
      * @return the last bar of the series
      */
-    default Bar getLastBar() {
-        return getBar(getEndIndex());
-    }
+    Bar getLastBar();
 
     /**
      * @return the number of bars in the series
@@ -78,9 +70,7 @@ public interface TimeSeries extends Serializable {
     /**
      * @return true if the series is empty, false otherwise
      */
-    default boolean isEmpty() {
-    	return getBarCount() == 0;
-    }
+    boolean isEmpty();
 
     /**
      * Warning: should be used carefully!
@@ -107,17 +97,7 @@ public interface TimeSeries extends Serializable {
     /**
      * @return the description of the series period (e.g. "from 12:00 21/01/2014 to 12:15 21/01/2014")
      */
-    default String getSeriesPeriodDescription() {
-        StringBuilder sb = new StringBuilder();
-        if (!getBarData().isEmpty()) {
-            Bar firstBar = getFirstBar();
-            Bar lastBar = getLastBar();
-            sb.append(firstBar.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME))
-                    .append(" - ")
-                    .append(lastBar.getEndTime().format(DateTimeFormatter.ISO_DATE_TIME));
-        }
-        return sb.toString();
-    }
+    String getSeriesPeriodDescription();
 
     /**
      * Sets the maximum number of bars that will be retained in the series.
@@ -146,55 +126,35 @@ public interface TimeSeries extends Serializable {
      * Exceeding bars are removed.
      * @param bar the bar to be added
      * @see TimeSeries#setMaximumBarCount(int)
-     * @apiNote use #addBar(Duration, ZonedDateTime, Num, Num, Num, Num, Num) to add bar data directly
+     * @apiNote use #addBar(long, long, Num, Num, Num, Num, Num) to add bar data directly
      */
     void addBar(Bar bar);
 
     /**
      * Adds a bar at the end of the series.
-     * @param timePeriod the {@link Duration} of this bar
-     * @param endTime the {@link ZonedDateTime end time} of this bar
+     * @param timePeriod the {@link long} of this bar
+     * @param endTime the {@link long end time} of this bar
      */
-    void addBar(Duration timePeriod, ZonedDateTime endTime);
+    void addBar(long timePeriod, long endTime);
 
-    default void addBar(ZonedDateTime endTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice){
-        this.addBar(endTime, numOf(openPrice), numOf(highPrice), numOf(lowPrice), numOf(closePrice), numOf(0), numOf(0));
-    }
+    void addBar(long endTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice);
 
-    default void addBar(ZonedDateTime endTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice,
-                        Number volume){
-        this.addBar(endTime, numOf(openPrice), numOf(highPrice), numOf(lowPrice), numOf(closePrice), numOf(volume));
-    }
+    void addBar(long endTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice,
+                        Number volume);
 
-    default void addBar(ZonedDateTime endTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice,
-                        Number volume, Number amount){
-        this.addBar(endTime, numOf(openPrice), numOf(highPrice), numOf(lowPrice), numOf(closePrice), numOf(volume),
-                numOf(amount));
-    }
+    void addBar(long endTime, Number openPrice, Number highPrice, Number lowPrice, Number closePrice,
+                        Number volume, Number amount);
 
-    default void addBar(ZonedDateTime endTime, String openPrice, String highPrice, String lowPrice, String closePrice){
-        this.addBar(endTime, numOf(new BigDecimal(openPrice)), numOf(new BigDecimal(highPrice)),
-                numOf(new BigDecimal(lowPrice)), numOf(new BigDecimal(closePrice)), numOf(0),
-                numOf(0));
-    }
+    void addBar(long endTime, String openPrice, String highPrice, String lowPrice, String closePrice);
 
-    default void addBar(ZonedDateTime endTime, String openPrice, String highPrice, String lowPrice, String closePrice,
-                        String volume){
-        this.addBar(endTime, numOf(new BigDecimal(openPrice)), numOf(new BigDecimal(highPrice)),
-                numOf(new BigDecimal(lowPrice)), numOf(new BigDecimal(closePrice)), numOf(new BigDecimal(volume)),
-                numOf(0));
-    }
+    void addBar(long endTime, String openPrice, String highPrice, String lowPrice, String closePrice,
+                        String volume);
 
-    default void addBar(ZonedDateTime endTime, String openPrice, String highPrice, String lowPrice, String closePrice,
-                        String volume, String amount){
-        this.addBar(endTime, numOf(new BigDecimal(openPrice)), numOf(new BigDecimal(highPrice)),
-                numOf(new BigDecimal(lowPrice)), numOf(new BigDecimal(closePrice)), numOf(new BigDecimal(volume)),
-                numOf(new BigDecimal(amount)));
-    }
 
-    default void addBar(ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume){
-        this.addBar(endTime, openPrice, highPrice, lowPrice, closePrice, volume, numOf(0));
-    }
+    void addBar(long endTime, String openPrice, String highPrice, String lowPrice, String closePrice,
+                        String volume, String amount);
+
+    void addBar(long endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume);
 
     /**
      * Adds a new <code>Bar</code> to the time series.
@@ -206,7 +166,7 @@ public interface TimeSeries extends Serializable {
      * @param volume the volume (default zero)
      * @param amount the amount (default zero)
      */
-    void addBar(ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume,
+    void addBar(long endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume,
                 Num amount);
 
     /**
@@ -218,7 +178,7 @@ public interface TimeSeries extends Serializable {
      * @param closePrice the last/close price
      * @param volume the volume (default zero)
      */
-    void addBar(Duration timePeriod, ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice,
+    void addBar(long timePeriod, long endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice,
                 Num volume);
 
     /**
@@ -232,7 +192,7 @@ public interface TimeSeries extends Serializable {
      * @param volume the volume (default zero)
      * @param amount the amount (default zero)
      */
-    void addBar(Duration timePeriod, ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice,
+    void addBar(long timePeriod, long endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice,
                 Num volume, Num amount);
 
     /**
@@ -240,18 +200,14 @@ public interface TimeSeries extends Serializable {
      * @param tradeVolume the traded volume
      * @param tradePrice the price
      */
-    default void addTrade(Number tradeVolume, Number tradePrice){
-        addTrade(numOf(tradeVolume), numOf(tradePrice));
-    }
+    void addTrade(Number tradeVolume, Number tradePrice);
 
     /**
      * Adds a trade at the end of bar period.
      * @param tradeVolume the traded volume
      * @param tradePrice the price
      */
-    default void addTrade(String tradeVolume, String tradePrice){
-        addTrade(numOf(new BigDecimal(tradeVolume)), numOf(new BigDecimal(tradePrice)));
-    }
+    void addTrade(String tradeVolume, String tradePrice);
 
     /**
      * Adds a trade at the end of bar period.
@@ -266,13 +222,9 @@ public interface TimeSeries extends Serializable {
      */
     void addPrice(Num price);
 
-    default void addPrice(String price){
-        addPrice(new BigDecimal(price));
-    }
+    void addPrice(String price);
 
-    default void addPrice(Number price){
-        addPrice(numOf(price));
-    }
+    void addPrice(Number price);
 
     /**
      * Returns a new TimeSeries instance that is a subset of this TimeSeries instance.

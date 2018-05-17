@@ -27,11 +27,6 @@ package org.ta4j.core;
 import org.ta4j.core.num.Num;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.function.Function;
 
 /**
  * End bar of a time period.
@@ -74,62 +69,42 @@ public interface Bar extends Serializable {
      */
     Num getAmount();
 
-    /**
-     * @return the time period of the bar
-     */
-    Duration getTimePeriod();
 
     /**
      * @return the begin timestamp of the bar period
      */
-    ZonedDateTime getBeginTime();
+    long getBeginTime();
 
     /**
      * @return the end timestamp of the bar period
      */
-    ZonedDateTime getEndTime();
+    long getEndTime();
 
     /**
      * @param timestamp a timestamp
      * @return true if the provided timestamp is between the begin time and the end time of the current period, false otherwise
      */
-    default boolean inPeriod(ZonedDateTime timestamp) {
-        return timestamp != null
-                && !timestamp.isBefore(getBeginTime())
-                && timestamp.isBefore(getEndTime());
-    }
+    boolean inPeriod(long timestamp);
 
     /**
      * @return a human-friendly string of the end timestamp
      */
-    default String getDateName() {
-        return getEndTime().format(DateTimeFormatter.ISO_DATE_TIME);
-    }
+    String getDateName();
 
     /**
      * @return a even more human-friendly string of the end timestamp
      */
-    default String getSimpleDateName() {
-        return getEndTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-    }
+    String getSimpleDateName();
 
     /**
      * @return true if this is a bearish bar, false otherwise
      */
-    default boolean isBearish() {
-        Num openPrice = getOpenPrice();
-        Num closePrice = getClosePrice();
-        return (openPrice != null) && (closePrice != null) && closePrice.isLessThan(openPrice);
-    }
+    boolean isBearish();
 
     /**
      * @return true if this is a bullish bar, false otherwise
      */
-    default boolean isBullish() {
-    	Num openPrice = getOpenPrice();
-        Num closePrice = getClosePrice();
-        return (openPrice != null) && (closePrice != null) && openPrice.isLessThan(closePrice);
-    }
+    boolean isBullish();
 
     /**
      * Adds a trade at the end of bar period.
@@ -138,9 +113,7 @@ public interface Bar extends Serializable {
      * @deprecated use corresponding function of TimeSeries
      */
     @Deprecated
-    default void addTrade(double tradeVolume, double tradePrice, Function<Number, Num> numFunction) {
-        addTrade(numFunction.apply(tradeVolume),numFunction.apply(tradePrice));
-    }
+    void addTrade(double tradeVolume, double tradePrice, Function<Number, Num> numFunction);
 
     /**
      * Adds a trade at the end of bar period.
@@ -149,9 +122,7 @@ public interface Bar extends Serializable {
      * @deprecated use corresponding function of TimeSeries
      */
     @Deprecated
-    default void addTrade(String tradeVolume, String tradePrice, Function<Number, Num> numFunction) {
-        addTrade(numFunction.apply(new BigDecimal(tradeVolume)), numFunction.apply(new BigDecimal(tradePrice)));
-    }
+    void addTrade(String tradeVolume, String tradePrice, Function<Number, Num> numFunction);
 
     /**
      * Adds a trade at the end of bar period.
@@ -161,13 +132,9 @@ public interface Bar extends Serializable {
     void addTrade(Num tradeVolume, Num tradePrice);
 
 
-    default void addPrice(String price, Function<Number, Num> numFunction){
-        addPrice(numFunction.apply(new BigDecimal(price)));
-    }
+    void addPrice(String price, Function<Number, Num> numFunction);
 
-    default void addPrice(Number price, Function<Number, Num> numFunction){
-        addPrice(numFunction.apply(price));
-    }
+    void addPrice(Number price, Function<Number, Num> numFunction);
 
     void addPrice(Num price);
 }

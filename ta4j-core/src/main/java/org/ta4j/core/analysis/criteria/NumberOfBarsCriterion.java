@@ -28,8 +28,6 @@ import org.ta4j.core.Trade;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.num.Num;
 
-import java.util.Objects;
-
 /**
  * Number of bars criterion.
  * </p>
@@ -48,7 +46,9 @@ public class NumberOfBarsCriterion extends AbstractAnalysisCriterion {
 
     @Override
     public Num calculate(TimeSeries series, Trade trade) {
-        Objects.requireNonNull(series, "Series must be not null");
+        if(series == null){
+            throw new NullPointerException("Series must be not null");
+        }
 
         return
             (series.numOf(1).plus(series.numOf(trade.getExit().getIndex())))

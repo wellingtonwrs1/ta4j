@@ -34,7 +34,7 @@ import org.ta4j.core.num.Num;
  * </p>
  * Satisfied when the close price reaches the loss threshold.
  */
-public class StopLossRule extends AbstractRule {
+public class StopLossRule extends AbstractRule{
 
     /** The close price indicator */
     private ClosePriceIndicator closePrice;

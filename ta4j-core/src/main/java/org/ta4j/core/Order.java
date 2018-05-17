@@ -26,7 +26,6 @@ package org.ta4j.core;
 import org.ta4j.core.num.Num;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * An order.

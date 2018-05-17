@@ -41,7 +41,6 @@ public class SumIndicator extends CachedIndicator<Num> {
      * (operand0 plus operand1 plus ... plus operandN)
      * @param operands the operand indicators for the sum
      */
-    @SafeVarargs
     public SumIndicator(Indicator<Num>... operands) {
         // TODO: check if first series is equal to the other ones
         super(operands[0]);

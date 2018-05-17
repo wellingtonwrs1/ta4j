@@ -23,7 +23,12 @@
  *******************************************************************************/
 package org.ta4j.core.num;
 
-import java.util.function.Function;
+
+import org.ta4j.core.Function;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 import static org.ta4j.core.num.NaN.NaN;
 
@@ -41,7 +46,12 @@ public class DoubleNum implements Num {
 
     @Override
     public Function<Number, Num> function() {
-        return DoubleNum::valueOf;
+        return new Function<Number, Num>() {
+            @Override
+            public Num apply(Number input) {
+                return valueOf(input);
+            }
+        };
     }
 
     private DoubleNum(double val){
@@ -241,5 +251,55 @@ public class DoubleNum implements Num {
 
     public static Num valueOf(Number i) {
         return new DoubleNum(Double.parseDouble(i.toString()));
+    }
+
+    /**
+     * Transforms a {@link Number} into a new Num instance of this
+     * <code>Num</code> implementation
+     * @param value the Number to transform
+     * @return the corresponding Num implementation of the <code>value</code>
+     */
+    public Num numOf(Number value){
+        return function().apply(value);
+    }
+
+    /**
+     * Transforms a {@link String} into a new Num instance of this with a precision
+     * <code>Num</code> implementation
+     * @param string the String to transform
+     * @param precision the precision
+     * @return the corresponding Num implementation of the <code>value</code>
+     */
+    public Num numOf(String string, int precision) {
+        MathContext mathContext = new MathContext(precision, RoundingMode.HALF_UP);
+        return this.numOf(new BigDecimal(string, mathContext));
+    }
+
+    /**
+     * Only for NaN this should be true
+     * @return false if this implementation is not NaN
+     */
+    public boolean isNaN(){
+        return false;
+    }
+
+    /**
+     * Converts this {@code num} to a {@code double}.
+     * @return this {@code num} converted to a {@code double}
+     */
+    public double doubleValue(){
+        return getDelegate().doubleValue();
+    }
+
+    public int intValue(){
+        return getDelegate().intValue();
+    }
+
+    public long longValue(){
+        return getDelegate().longValue();
+    }
+
+    public float floatValue(){
+        return getDelegate().floatValue();
     }
 }

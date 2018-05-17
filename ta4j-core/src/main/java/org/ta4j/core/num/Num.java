@@ -23,11 +23,9 @@
  *******************************************************************************/
 package org.ta4j.core.num;
 
+import org.ta4j.core.Function;
+
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.util.function.Function;
 
 /**
  * Ta4js definition of operations that must be fulfilled by an object that
@@ -217,29 +215,22 @@ public interface Num extends Comparable<Num>, Serializable {
      * @param value the Number to transform
      * @return the corresponding Num implementation of the <code>value</code>
      */
-    default Num numOf(Number value){
-        return function().apply(value);
-    }
+    Num numOf(Number value);
 
     /**
      * Transforms a {@link String} into a new Num instance of this with a precision
      * <code>Num</code> implementation
-     * @param value the String to transform
+     * @param string the String to transform
      * @param precision the precision
      * @return the corresponding Num implementation of the <code>value</code>
      */
-    default Num numOf(String string, int precision) {
-        MathContext mathContext = new MathContext(precision, RoundingMode.HALF_UP);
-        return this.numOf(new BigDecimal(string, mathContext));
-    }
+    Num numOf(String string, int precision);
 
     /**
       * Only for NaN this should be true
       * @return false if this implementation is not NaN
       */
-    default boolean isNaN(){
-        return false;
-    }
+    boolean isNaN();
 
 
 
@@ -247,21 +238,13 @@ public interface Num extends Comparable<Num>, Serializable {
      * Converts this {@code num} to a {@code double}.
      * @return this {@code num} converted to a {@code double}
      */
-    default double doubleValue(){
-        return getDelegate().doubleValue();
-    }
+    double doubleValue();
 
-    default int intValue(){
-        return getDelegate().intValue();
-    }
+    int intValue();
 
-    default long longValue(){
-        return getDelegate().longValue();
-    }
+    long longValue();
 
-    default float floatValue(){
-        return getDelegate().floatValue();
-    }
+    float floatValue();
 
 
     @Override

@@ -34,7 +34,7 @@ import org.ta4j.core.num.Num;
  * Satisfied when the value of the {@link Indicator indicator} is the lowest
  * within the barCount.
  */
-public class IsLowestRule extends AbstractRule {
+public class IsLowestRule extends AbstractRule{
 
 	/** The actual indicator */
 	private Indicator<Num> ref;
