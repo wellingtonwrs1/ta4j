@@ -193,6 +193,9 @@ public final class PrecisionNum implements Num {
      * Returns a {@code Num} version of the given {@code float}.
      * Using the float version could introduce inaccuracies.
      *
+     * <p>
+	   * Using the float version could introduce inaccuracies.
+     
      * @param val the number
      * @return the {@code Num}
      */
@@ -214,6 +217,9 @@ public final class PrecisionNum implements Num {
     /**
      * Returns a {@code Num} version of the given {@code double}.
      * Using the double version could introduce inaccuracies.
+     *
+     * <p>
+	   * Using the double version could introduce inaccuracies.
      *
      * @param val the number
      * @return the {@code Num}
