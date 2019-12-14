@@ -70,7 +70,7 @@ public class BarSeriesManagerTest extends AbstractIndicatorTest<BarSeries, Num> 
                         ZonedDateTime.parse("2015-12-01T00:00:00-05:00", dtf) });
         manager = new BarSeriesManager(seriesForRun);
 
-        strategy = new BaseStrategy(new FixedRule(0, 2, 3, 6), new FixedRule(1, 4, 7, 8));
+        strategy = new BaseStrategy(new FixedRule(0, 2, 3, 6), new FixedRule(1, 4, 7, 8), null);
         strategy.setUnstablePeriod(2); // Strategy would need a real test class
     }
 
@@ -108,7 +108,7 @@ public class BarSeriesManagerTest extends AbstractIndicatorTest<BarSeries, Num> 
 
     @Test
     public void runWithOpenEntryBuyLeft() {
-        Strategy aStrategy = new BaseStrategy(new FixedRule(1), new FixedRule(3));
+        Strategy aStrategy = new BaseStrategy(new FixedRule(1), new FixedRule(3), null);
         List<Trade> trades = manager.run(aStrategy, 0, 3).getTrades();
         assertEquals(1, trades.size());
 
@@ -118,7 +118,7 @@ public class BarSeriesManagerTest extends AbstractIndicatorTest<BarSeries, Num> 
 
     @Test
     public void runWithOpenEntrySellLeft() {
-        Strategy aStrategy = new BaseStrategy(new FixedRule(1), new FixedRule(3));
+        Strategy aStrategy = new BaseStrategy(new FixedRule(1), new FixedRule(3), null);
         List<Trade> trades = manager.run(aStrategy, OrderType.SELL, 0, 3).getTrades();
         assertEquals(1, trades.size());
 
@@ -153,7 +153,7 @@ public class BarSeriesManagerTest extends AbstractIndicatorTest<BarSeries, Num> 
                         dateTime.withYear(2005) });
         manager.setBarSeries(series);
 
-        Strategy aStrategy = new BaseStrategy(new FixedRule(0, 3, 5, 7), new FixedRule(2, 4, 6, 9));
+        Strategy aStrategy = new BaseStrategy(new FixedRule(0, 3, 5, 7), new FixedRule(2, 4, 6, 9), null);
 
         List<Trade> trades = manager.run(aStrategy, 0, 1).getTrades();
         assertEquals(1, trades.size());

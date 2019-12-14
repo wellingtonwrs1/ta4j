@@ -104,7 +104,7 @@ public class CachedIndicatorTest extends AbstractIndicatorTest<Indicator<Num>, N
         // Theoretical values for SMA(2) cache: null, null, 2, 2.5, 3.5, 4.5, 5.5, 6.5
 
         Strategy strategy = new BaseStrategy(new OverIndicatorRule(sma, sma.numOf(3)),
-                new UnderIndicatorRule(sma, sma.numOf(3)));
+                new UnderIndicatorRule(sma, sma.numOf(3)), null);
         // Theoretical shouldEnter results: false, false, false, false, true, true,
         // true, true
         // Theoretical shouldExit results: false, false, true, true, false, false,

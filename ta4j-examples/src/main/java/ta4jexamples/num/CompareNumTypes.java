@@ -80,7 +80,7 @@ public class CompareNumTypes {
 
         Rule entry = new IsEqualRule(macdIndicator, macdIndicator2);
         Rule exit = new UnderIndicatorRule(new LowPriceIndicator(series), new HighPriceIndicator(series));
-        Strategy strategy1 = new BaseStrategy(entry, exit); // enter/exit every tick
+        Strategy strategy1 = new BaseStrategy(entry, exit, null); // enter/exit every tick
 
         long start = System.currentTimeMillis();
         BarSeriesManager manager = new BarSeriesManager(series);
