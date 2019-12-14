@@ -85,7 +85,7 @@ public class TradingBotOnMovingBarSeries {
         // Buy when SMA goes over close price
         // Sell when close price goes over SMA
         Strategy buySellSignals = new BaseStrategy(new OverIndicatorRule(sma, closePrice),
-                new UnderIndicatorRule(sma, closePrice));
+                new UnderIndicatorRule(sma, closePrice), null);
         return buySellSignals;
     }
 

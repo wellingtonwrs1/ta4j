@@ -75,7 +75,7 @@ public class GlobalExtremaStrategy {
         MultiplierIndicator upWeek = new MultiplierIndicator(weekHighPrice, 0.996);
         Rule sellingRule = new OverIndicatorRule(closePrices, upWeek);
 
-        return new BaseStrategy(buyingRule, sellingRule);
+        return new BaseStrategy(buyingRule, sellingRule, null);
     }
 
     public static void main(String[] args) {

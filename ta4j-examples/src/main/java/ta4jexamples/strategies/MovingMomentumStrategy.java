@@ -82,7 +82,7 @@ public class MovingMomentumStrategy {
                 .and(new CrossedUpIndicatorRule(stochasticOscillK, 20)) // Signal 1
                 .and(new UnderIndicatorRule(macd, emaMacd)); // Signal 2
 
-        return new BaseStrategy(entryRule, exitRule);
+        return new BaseStrategy(entryRule, exitRule, null);
     }
 
     public static void main(String[] args) {

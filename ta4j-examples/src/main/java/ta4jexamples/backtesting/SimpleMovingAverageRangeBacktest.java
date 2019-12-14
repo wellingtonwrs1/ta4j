@@ -53,7 +53,7 @@ public class SimpleMovingAverageRangeBacktest {
         final List<Strategy> strategies = new ArrayList<>();
         for (int i = start; i <= stop; i += step) {
             Strategy strategy = new BaseStrategy("Sma(" + i + ")", createEntryRule(series, i),
-                    createExitRule(series, i));
+                    createExitRule(series, i), null);
             strategies.add(strategy);
         }
         BacktestExecutor backtestExecutor = new BacktestExecutor(series);
