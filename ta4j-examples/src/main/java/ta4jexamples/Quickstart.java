@@ -86,7 +86,7 @@ public class Quickstart {
 
         // Running our juicy trading strategy...
         BarSeriesManager seriesManager = new BarSeriesManager(series);
-        TradingRecord tradingRecord = seriesManager.run(new BaseStrategy(buyingRule, sellingRule));
+        TradingRecord tradingRecord = seriesManager.run(new BaseStrategy(buyingRule, sellingRule, null));
         System.out.println("Number of trades for our strategy: " + tradingRecord.getTradeCount());
 
         // Analysis

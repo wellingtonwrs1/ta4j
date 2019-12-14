@@ -77,7 +77,7 @@ public class ADXStrategy {
         final UnderIndicatorRule closePriceUnderSma = new UnderIndicatorRule(closePriceIndicator, smaIndicator);
         final Rule exitRule = adxOver20Rule.and(plusDICrossedDownMinusDI).and(closePriceUnderSma);
 
-        return new BaseStrategy("ADX", entryRule, exitRule, adxBarCount);
+        return new BaseStrategy("ADX", entryRule, exitRule, null, adxBarCount);
     }
 
     public static void main(String[] args) {
