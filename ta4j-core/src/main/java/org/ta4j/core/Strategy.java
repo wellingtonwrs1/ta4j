@@ -48,6 +48,11 @@ public interface Strategy {
     Rule getExitRule();
 
     /**
+     * @return the close rule
+     */
+    Rule getCloseRule();
+
+    /**
      * @param strategy the other strategy
      * @return the AND combination of two {@link Strategy strategies}
      */
@@ -145,5 +150,22 @@ public interface Strategy {
      */
     default boolean shouldExit(int index, TradingRecord tradingRecord) {
         return !isUnstableAt(index) && getExitRule().isSatisfied(index, tradingRecord);
+    }
+
+    /**
+     * @param index the bar index
+     * @return true to recommend to close, false otherwise
+     */
+    default boolean shouldClose(int index) {
+        return shouldClose(index, null);
+    }
+
+    /**
+     * @param index         the bar index
+     * @param tradingRecord the potentially needed trading history
+     * @return true to recommend to close, false otherwise
+     */
+    default boolean shouldClose(int index, TradingRecord tradingRecord) {
+        return !isUnstableAt(index) && getCloseRule().isSatisfied(index, tradingRecord);
     }
 }

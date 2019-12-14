@@ -79,7 +79,7 @@ public class RSI2Strategy {
 
         // TODO: Finalize the strategy
 
-        return new BaseStrategy(entryRule, exitRule);
+        return new BaseStrategy(entryRule, exitRule, null);
     }
 
     public static void main(String[] args) {

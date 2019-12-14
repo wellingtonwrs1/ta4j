@@ -87,6 +87,6 @@ public class TradeCost {
         Rule shortUnderLongRule = new UnderIndicatorRule(shortEma, longEma);
 
         String strategyName = "Momentum short-selling strategy";
-        return new BaseStrategy(strategyName, shortOverLongRule, shortUnderLongRule);
+        return new BaseStrategy(strategyName, shortOverLongRule, shortUnderLongRule, null);
     }
 }
