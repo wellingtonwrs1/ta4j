@@ -62,7 +62,7 @@ public class StopTrailingRule extends AbstractRule {
 
     private Num getLossPercentage() {
         if (this.trailingSum.isPositive()) {
-            return this.gainPercentage.plus(this.trailingSum).minus(this.trailingPercentage);
+            return this.gainPercentage.plus(this.trailingSum).minus(this.trailingPercentage).multipliedBy(closePrice.numOf(-1));
         }
         return this.lossPercentage;
     }
