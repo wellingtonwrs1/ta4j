@@ -41,11 +41,11 @@ public class StopTrailingRule extends AbstractRule {
             Rule stopGainRule = new StopGainRule(this.closePrice, this.gainPercentage.plus(this.trailingSum));
             Rule stopLossRule = new StopLossRule(this.closePrice, this.getLossPercentage());
             if (stopGainRule.isSatisfied(index, tradingRecord) && !this.isTrailingStop()) {
-                satisfied = true;
                 this.trailingSum = closePrice.numOf(0);
+                satisfied = true;
             } else if (stopLossRule.isSatisfied(index, tradingRecord)) {
-                satisfied = true;
                 this.trailingSum = closePrice.numOf(0);
+                satisfied = true;
             }
         }
         traceIsSatisfied(index, satisfied);
