@@ -1,19 +1,19 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014-2017 Marc de Verdelhan, 2017-2019 Ta4j Organization & respective
  * authors (see AUTHORS)
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -30,8 +30,8 @@ import org.ta4j.core.BaseBarSeries;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.time.LocalDate;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -49,7 +49,7 @@ public class CsvBarsLoader {
      * @return the bar series from Apple Inc. bars.
      */
     public static BarSeries loadAppleIncSeries() {
-        return loadCsvSeries("appleinc_bars_from_20130101_usd.csv");
+        return loadCsvSeries("binance.csv");
     }
 
     public static BarSeries loadCsvSeries(String filename) {
@@ -58,16 +58,15 @@ public class CsvBarsLoader {
 
         BarSeries series = new BaseBarSeries("apple_bars");
 
-        try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, Charset.forName("UTF-8")), ',', '"',
-                1)) {
+        try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, StandardCharsets.UTF_8), ',', '"', 1)) {
             String[] line;
             while ((line = csvReader.readNext()) != null) {
-                ZonedDateTime date = LocalDate.parse(line[0], DATE_FORMAT).atStartOfDay(ZoneId.systemDefault());
+                ZonedDateTime date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(line[0]) * 1000), ZoneId.systemDefault());
                 double open = Double.parseDouble(line[1]);
                 double high = Double.parseDouble(line[2]);
                 double low = Double.parseDouble(line[3]);
                 double close = Double.parseDouble(line[4]);
-                double volume = Double.parseDouble(line[5]);
+                double volume = 0;
 
                 series.addBar(date, open, high, low, close, volume);
             }
@@ -87,4 +86,5 @@ public class CsvBarsLoader {
         System.out.println("First bar: \n" + "\tVolume: " + series.getBar(0).getVolume() + "\n" + "\tOpen price: "
                 + series.getBar(0).getOpenPrice() + "\n" + "\tClose price: " + series.getBar(0).getClosePrice());
     }
+
 }
