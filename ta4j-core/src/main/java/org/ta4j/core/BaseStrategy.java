@@ -168,9 +168,9 @@ public class BaseStrategy implements Strategy {
 
     @Override
     public boolean shouldClose(int index, TradingRecord tradingRecord) {
-        boolean exit = Strategy.super.shouldClose(index, tradingRecord);
-        traceShouldClose(index, exit);
-        return exit;
+        boolean close = Strategy.super.shouldClose(index, tradingRecord);
+        traceShouldClose(index, close);
+        return close;
     }
 
     @Override
@@ -226,9 +226,9 @@ public class BaseStrategy implements Strategy {
      * Traces the shouldClose() method calls.
      *
      * @param index the bar index
-     * @param exit  true if the strategy should close, false otherwise
+     * @param close  true if the strategy should close, false otherwise
      */
-    protected void traceShouldClose(int index, boolean exit) {
-        log.trace(">>> {}#shouldExit({}): {}", className, index, exit);
+    protected void traceShouldClose(int index, boolean close) {
+        log.trace(">>> {}#shouldClose({}): {}", className, index, close);
     }
 }
