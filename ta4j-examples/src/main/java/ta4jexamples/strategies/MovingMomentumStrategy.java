@@ -90,6 +90,8 @@ public class MovingMomentumStrategy {
             } else if (tradingRecord != null && strategy.shouldClose(i, tradingRecord)) {
                 tradingRecord.exit(i, series.getBar(i).getClosePrice(), series.numOf(1));
                 System.out.println(tradingRecord.getLastExit().toString());
+                System.out.println(tradingRecord.getLastExit().getPricePerAsset().minus(tradingRecord.getLastEntry().getPricePerAsset()).dividedBy(tradingRecord.getLastEntry().getPricePerAsset()).multipliedBy(series.numOf(100)));
+                System.out.println("------------------------------------------------------------------------------------");
                 tradingRecord = null;
             }
         }
