@@ -49,7 +49,7 @@ public class CsvBarsLoader {
      * @return the bar series from Apple Inc. bars.
      */
     public static BarSeries loadAppleIncSeries() {
-        return loadCsvSeries("binance.csv");
+        return loadCsvSeries("binance_2.csv");
     }
 
     public static BarSeries loadCsvSeries(String filename) {
