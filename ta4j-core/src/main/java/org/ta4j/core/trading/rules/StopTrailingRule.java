@@ -36,20 +36,26 @@ public class StopTrailingRule extends AbstractRule {
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
-        // No trading history or no trade opened, no loss
+        // No trading history or no trade opened, no trailing
         if (tradingRecord != null) {
-            Rule stopGainRule = new StopGainRule(this.closePrice, this.gainPercentage.plus(this.trailingSum));
-            Rule stopLossRule = new StopLossRule(this.closePrice, this.getLossPercentage());
-            if (stopGainRule.isSatisfied(index, tradingRecord) && !this.isTrailingStop()) {
+            if (this.getStopGainRule().isSatisfied(index, tradingRecord) && !this.isTrailingStop()) {
                 this.trailingSum = closePrice.numOf(0);
                 satisfied = true;
-            } else if (stopLossRule.isSatisfied(index, tradingRecord)) {
+            } else if (this.getStopLossRule().isSatisfied(index, tradingRecord)) {
                 this.trailingSum = closePrice.numOf(0);
                 satisfied = true;
             }
         }
         traceIsSatisfied(index, satisfied);
         return satisfied;
+    }
+
+    private Rule getStopGainRule() {
+        return new StopGainRule(this.closePrice, this.gainPercentage.plus(this.trailingSum));
+    }
+
+    private Rule getStopLossRule() {
+        return new StopLossRule(this.closePrice, this.getLossPercentage());
     }
 
     private boolean isTrailingStop() {
