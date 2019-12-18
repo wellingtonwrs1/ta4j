@@ -74,23 +74,31 @@ public class MovingMomentumStrategy {
         // Getting the bar series
         BarSeries series = CsvBarsLoader.loadAppleIncSeries();
 
-        // Building the trading strategy
-        Strategy strategy = buildStrategy(series);
-
         TradingRecord tradingRecord = null;
         for (int i = series.getBeginIndex(); i <= series.getEndIndex(); i++) {
-            if (tradingRecord == null && strategy.shouldEnter(i)) {
+            Strategy strategy = buildStrategy(series);
+            if (strategy.shouldEnter(i)) {
                 tradingRecord = new BaseTradingRecord(Order.OrderType.BUY);
                 tradingRecord.enter(i, series.getBar(i).getClosePrice(), series.numOf(1));
-                System.out.println(tradingRecord.getLastEntry().toString());
-            } else if (tradingRecord == null && strategy.shouldExit(i)) {
+                System.out.println(series.getBar(i).getEndTime().toString() + ": " + tradingRecord.getLastEntry().toString());
+            } else if (strategy.shouldExit(i)) {
                 tradingRecord = new BaseTradingRecord(Order.OrderType.SELL);
                 tradingRecord.enter(i, series.getBar(i).getClosePrice(), series.numOf(1));
-                System.out.println(tradingRecord.getLastEntry().toString());
-            } else if (tradingRecord != null && strategy.shouldClose(i, tradingRecord)) {
-                tradingRecord.exit(i, series.getBar(i).getClosePrice(), series.numOf(1));
-                System.out.println(tradingRecord.getLastExit().toString());
-                System.out.println(tradingRecord.getLastExit().getPricePerAsset().minus(tradingRecord.getLastEntry().getPricePerAsset()).dividedBy(tradingRecord.getLastEntry().getPricePerAsset()).multipliedBy(series.numOf(100)));
+                System.out.println(series.getBar(i).getEndTime().toString() + ": " + tradingRecord.getLastEntry().toString());
+            }
+            if (tradingRecord != null) {
+                for (int j = i; j <= series.getEndIndex(); j++) {
+                    double minPrice = series.getBar(j).getLowPrice().doubleValue();
+                    while (minPrice <= series.getBar(j).getHighPrice().doubleValue()) {
+                        series.getBar(j).addPrice(series.numOf(minPrice));
+                        if (strategy.shouldClose(j, tradingRecord)) {
+                            tradingRecord.exit(j, series.getBar(j).getClosePrice(), series.numOf(1));
+                            System.out.println(series.getBar(j).getEndTime().toString() + ": " + tradingRecord.getLastExit().toString());
+                            break;
+                        }
+                        minPrice += 0.01;
+                    }
+                }
                 System.out.println("------------------------------------------------------------------------------------");
                 tradingRecord = null;
             }
