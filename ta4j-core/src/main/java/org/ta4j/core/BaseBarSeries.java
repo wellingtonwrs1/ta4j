@@ -410,7 +410,7 @@ public class BaseBarSeries implements BarSeries {
             // Begin index set to 0 only if it wasn't initialized
             seriesBeginIndex = 0;
         }
-        seriesEndIndex = bars.size() - 1;
+        seriesEndIndex++;
         removeExceedingBars();
     }
 
