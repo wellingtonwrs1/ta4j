@@ -44,7 +44,7 @@ import java.util.List;
 public class SimpleMovingAverageRangeBacktest {
 
     public static void main(String[] args) {
-        BarSeries series = CsvBarsLoader.loadAppleIncSeries();
+        BarSeries series = CsvBarsLoader.loadSeries();
 
         int start = 3;
         int stop = 50;

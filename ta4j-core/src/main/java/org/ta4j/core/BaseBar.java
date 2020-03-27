@@ -406,7 +406,7 @@ public class BaseBar implements Bar {
     @Override
     public String toString() {
         return String.format(
-                "{end time: %1s, close price: %2$f, open price: %3$f, low price: %4$f, high price: %5$f, volume: %6$f}",
+                "{end time: %1s, close: %2$f, open: %3$f, low: %4$f, high: %5$f, volume: %6$f}",
                 endTime.withZoneSameInstant(ZoneId.systemDefault()), closePrice.doubleValue(), openPrice.doubleValue(),
                 lowPrice.doubleValue(), highPrice.doubleValue(), volume.doubleValue());
     }
