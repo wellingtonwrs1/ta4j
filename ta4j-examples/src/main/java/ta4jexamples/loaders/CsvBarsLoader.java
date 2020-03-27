@@ -48,15 +48,15 @@ public class CsvBarsLoader {
     /**
      * @return the bar series from Apple Inc. bars.
      */
-    public static BarSeries loadAppleIncSeries() {
-        return loadCsvSeries("binance_2.csv");
+    public static BarSeries loadSeries() {
+        return loadCsvSeries("binance.csv");
     }
 
     public static BarSeries loadCsvSeries(String filename) {
 
         InputStream stream = CsvBarsLoader.class.getClassLoader().getResourceAsStream(filename);
 
-        BarSeries series = new BaseBarSeries("apple_bars");
+        BarSeries series = new BaseBarSeries();
 
         try (CSVReader csvReader = new CSVReader(new InputStreamReader(stream, StandardCharsets.UTF_8), ',', '"', 1)) {
             String[] line;
@@ -79,7 +79,7 @@ public class CsvBarsLoader {
     }
 
     public static void main(String[] args) {
-        BarSeries series = CsvBarsLoader.loadAppleIncSeries();
+        BarSeries series = CsvBarsLoader.loadSeries();
 
         System.out.println("Series: " + series.getName() + " (" + series.getSeriesPeriodDescription() + ")");
         System.out.println("Number of bars: " + series.getBarCount());
