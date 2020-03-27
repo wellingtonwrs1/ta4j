@@ -72,7 +72,7 @@ public class MovingMomentumStrategy {
     public static void main(String[] args) {
 
         // Getting the bar series
-        BarSeries series = CsvBarsLoader.loadAppleIncSeries();
+        BarSeries series = CsvBarsLoader.loadSeries();
 
         TradingRecord tradingRecord = null;
         for (int i = series.getBeginIndex(); i <= series.getEndIndex(); i++) {
