@@ -105,4 +105,8 @@ public class StopLossRule extends AbstractRule {
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
         return currentPrice.isLessThanOrEqual(threshold);
     }
+
+    public void setLossPercentage(Num lossPercentage) {
+        this.lossPercentage = lossPercentage;
+    }
 }
