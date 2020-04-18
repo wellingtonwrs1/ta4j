@@ -27,6 +27,7 @@ import org.ta4j.core.Order.OrderType;
 import org.ta4j.core.num.Num;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.ta4j.core.num.NaN.NaN;
@@ -75,6 +76,8 @@ public interface TradingRecord extends Serializable {
     default boolean enter(int index) {
         return enter(index, NaN, NaN);
     }
+
+    void operate(int index, Num price, Num amount, ZonedDateTime startTime);
 
     /**
      * Operates an entry order in the trading record.
