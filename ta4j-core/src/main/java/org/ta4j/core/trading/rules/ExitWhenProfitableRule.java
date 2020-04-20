@@ -58,7 +58,7 @@ public class ExitWhenProfitableRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
-        if (tradingRecord != null) {
+        if (tradingRecord != null && expirationTime.isPositive()) {
             Trade currentTrade = tradingRecord.getCurrentTrade();
             if (currentTrade.isOpened()) {
                 Order order = currentTrade.getEntry();
