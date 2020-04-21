@@ -89,7 +89,7 @@ public class PeriodicalGrowthRateIndicatorTest extends AbstractIndicatorTest<Ind
         Rule buyingRule = new CrossedUpIndicatorRule(gri, 0);
         Rule sellingRule = new CrossedDownIndicatorRule(gri, 0);
 
-        Strategy strategy = new BaseStrategy(buyingRule, sellingRule);
+        Strategy strategy = new BaseStrategy(buyingRule, sellingRule, null);
 
         // Check trades
         int result = seriesManager.run(strategy).getTradeCount();

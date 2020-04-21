@@ -1,19 +1,19 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014-2017 Marc de Verdelhan, 2017-2019 Ta4j Organization & respective
  * authors (see AUTHORS)
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -27,12 +27,12 @@ import org.ta4j.core.cost.CostModel;
 import org.ta4j.core.cost.ZeroCostModel;
 import org.ta4j.core.num.Num;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Base implementation of a {@link TradingRecord}.
- *
  */
 public class BaseTradingRecord implements TradingRecord {
 
@@ -107,7 +107,7 @@ public class BaseTradingRecord implements TradingRecord {
      * @param holdingCostModel     the cost model for holding asset (e.g. borrowing)
      */
     public BaseTradingRecord(Order.OrderType entryOrderType, CostModel transactionCostModel,
-            CostModel holdingCostModel) {
+                             CostModel holdingCostModel) {
         if (entryOrderType == null) {
             throw new IllegalArgumentException("Starting type must not be null");
         }
@@ -157,12 +157,17 @@ public class BaseTradingRecord implements TradingRecord {
 
     @Override
     public void operate(int index, Num price, Num amount) {
+        this.operate(index, price, amount, null);
+    }
+
+    @Override
+    public void operate(int index, Num price, Num amount, ZonedDateTime startTime) {
         if (currentTrade.isClosed()) {
             // Current trade closed, should not occur
             throw new IllegalStateException("Current trade should not be closed");
         }
         boolean newOrderWillBeAnEntry = currentTrade.isNew();
-        Order newOrder = currentTrade.operate(index, price, amount);
+        Order newOrder = currentTrade.operate(index, price, amount, startTime);
         recordOrder(newOrder, newOrderWillBeAnEntry);
     }
 

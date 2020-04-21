@@ -44,7 +44,7 @@ import java.util.List;
 public class SimpleMovingAverageRangeBacktest {
 
     public static void main(String[] args) {
-        BarSeries series = CsvBarsLoader.loadAppleIncSeries();
+        BarSeries series = CsvBarsLoader.loadSeries();
 
         int start = 3;
         int stop = 50;
@@ -53,7 +53,7 @@ public class SimpleMovingAverageRangeBacktest {
         final List<Strategy> strategies = new ArrayList<>();
         for (int i = start; i <= stop; i += step) {
             Strategy strategy = new BaseStrategy("Sma(" + i + ")", createEntryRule(series, i),
-                    createExitRule(series, i));
+                    createExitRule(series, i), null);
             strategies.add(strategy);
         }
         BacktestExecutor backtestExecutor = new BacktestExecutor(series);

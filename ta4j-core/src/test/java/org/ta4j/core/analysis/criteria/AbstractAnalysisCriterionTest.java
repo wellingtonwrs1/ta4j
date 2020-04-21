@@ -53,8 +53,8 @@ public class AbstractAnalysisCriterionTest extends AbstractCriterionTest {
 
     @Before
     public void setUp() {
-        alwaysStrategy = new BaseStrategy(BooleanRule.TRUE, BooleanRule.TRUE);
-        buyAndHoldStrategy = new BaseStrategy(new FixedRule(0), new FixedRule(4));
+        alwaysStrategy = new BaseStrategy(BooleanRule.TRUE, BooleanRule.TRUE, null);
+        buyAndHoldStrategy = new BaseStrategy(new FixedRule(0), new FixedRule(4), null);
         strategies = new ArrayList<Strategy>();
         strategies.add(alwaysStrategy);
         strategies.add(buyAndHoldStrategy);

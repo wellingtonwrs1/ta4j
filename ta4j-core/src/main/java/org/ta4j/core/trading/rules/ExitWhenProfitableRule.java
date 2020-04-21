@@ -1,19 +1,19 @@
 /**
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014-2017 Marc de Verdelhan, 2017-2019 Ta4j Organization & respective
  * authors (see AUTHORS)
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -23,22 +23,15 @@
  */
 package org.ta4j.core.trading.rules;
 
+import org.ta4j.core.Order;
 import org.ta4j.core.Trade;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.num.Num;
 
-/**
- * A stop-loss rule.
- *
- * Satisfied when the close price reaches the loss threshold.
- */
-public class StopLossRule extends AbstractRule {
+import java.time.ZonedDateTime;
 
-    /**
-     * Constant value for 100
-     */
-    private final Num HUNDRED;
+public class ExitWhenProfitableRule extends AbstractRule {
 
     /**
      * The close price indicator
@@ -46,47 +39,34 @@ public class StopLossRule extends AbstractRule {
     private final ClosePriceIndicator closePrice;
 
     /**
-     * The loss percentage
+     * The expiration time in minutes
      */
-    private Num lossPercentage;
+    private final Num expirationTime;
 
     /**
      * Constructor.
      *
      * @param closePrice     the close price indicator
-     * @param lossPercentage the loss percentage
+     * @param expirationTime to satisfied when profitable and time in minutes expired
      */
-    public StopLossRule(ClosePriceIndicator closePrice, Number lossPercentage) {
-        this(closePrice, closePrice.numOf(lossPercentage));
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param closePrice     the close price indicator
-     * @param lossPercentage the loss percentage
-     */
-    public StopLossRule(ClosePriceIndicator closePrice, Num lossPercentage) {
+    public ExitWhenProfitableRule(ClosePriceIndicator closePrice, Num expirationTime) {
         this.closePrice = closePrice;
-        this.lossPercentage = lossPercentage;
-        this.HUNDRED = closePrice.numOf(100);
+        this.expirationTime = expirationTime;
     }
 
     @Override
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
-        if (tradingRecord != null) {
+        if (tradingRecord != null && expirationTime.isPositive()) {
             Trade currentTrade = tradingRecord.getCurrentTrade();
             if (currentTrade.isOpened()) {
-
-                Num entryPrice = currentTrade.getEntry().getNetPrice();
+                Order order = currentTrade.getEntry();
                 Num currentPrice = closePrice.getValue(index);
-
                 if (currentTrade.getEntry().isBuy()) {
-                    satisfied = isBuyStopSatisfied(entryPrice, currentPrice);
+                    satisfied = isBuyGainSatisfied(order.getNetPrice(), currentPrice) && isExpirationTimeSatisfied(order.getStartTime());
                 } else {
-                    satisfied = isSellStopSatisfied(entryPrice, currentPrice);
+                    satisfied = isSellGainSatisfied(order.getNetPrice(), currentPrice) && isExpirationTimeSatisfied(order.getStartTime());
                 }
             }
         }
@@ -94,19 +74,16 @@ public class StopLossRule extends AbstractRule {
         return satisfied;
     }
 
-    private boolean isSellStopSatisfied(Num entryPrice, Num currentPrice) {
-        Num lossRatioThreshold = HUNDRED.plus(lossPercentage).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isGreaterThanOrEqual(threshold);
+    private boolean isExpirationTimeSatisfied(ZonedDateTime startTime) {
+        return startTime == null || startTime.plusMinutes(expirationTime.intValue()).compareTo(ZonedDateTime.now()) <= 0;
     }
 
-    private boolean isBuyStopSatisfied(Num entryPrice, Num currentPrice) {
-        Num lossRatioThreshold = HUNDRED.minus(lossPercentage).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isLessThanOrEqual(threshold);
+    private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
+        return currentPrice.isGreaterThanOrEqual(entryPrice);
     }
 
-    public void setLossPercentage(Num lossPercentage) {
-        this.lossPercentage = lossPercentage;
+    private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
+        return currentPrice.isLessThanOrEqual(entryPrice);
     }
+
 }

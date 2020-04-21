@@ -21,28 +21,38 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.indicators.helpers;
+package org.ta4j.core.indicators;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
+import org.junit.Test;
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.indicators.CachedIndicator;
+import org.ta4j.core.Indicator;
+import org.ta4j.core.mocks.MockBar;
+import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 
-/**
- * Typical price indicator.
- */
-public class TypicalPriceIndicator extends CachedIndicator<Num> {
+public class DateTimeIndicatorTest extends AbstractIndicatorTest<Indicator<Num>, Num> {
 
-    public TypicalPriceIndicator(BarSeries series) {
-        super(series);
-    }
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
-    @Override
-    protected Num calculate(int index) {
-        final Bar bar = getBarSeries().getBar(index);
-        final Num highPrice = bar.getHighPrice();
-        final Num lowPrice = bar.getLowPrice();
-        final Num closePrice = bar.getClosePrice();
-        return highPrice.plus(lowPrice).plus(closePrice).dividedBy(numOf(3));
+	public DateTimeIndicatorTest(Function<Number, Num> numFunction) {
+		super(numFunction);
+	}
+    
+    @Test
+    public void test() {
+    	ZonedDateTime expectedZonedDateTime = ZonedDateTime.parse("2019-09-17T00:04:00-00:00", DATE_TIME_FORMATTER);
+        List<Bar> bars = Arrays.asList(new MockBar(expectedZonedDateTime, 1, numFunction));
+        BarSeries series = new MockBarSeries(bars);
+        DateTimeIndicator dateTimeIndicator = new DateTimeIndicator(series, Bar::getEndTime);
+        assertEquals(expectedZonedDateTime, dateTimeIndicator.getValue(0));
     }
 }

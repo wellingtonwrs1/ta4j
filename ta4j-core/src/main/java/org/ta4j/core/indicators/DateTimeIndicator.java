@@ -21,28 +21,33 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.indicators.helpers;
+package org.ta4j.core.indicators;
+
+import java.time.ZonedDateTime;
+import java.util.function.Function;
 
 import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
-import org.ta4j.core.indicators.CachedIndicator;
-import org.ta4j.core.num.Num;
 
 /**
- * Typical price indicator.
+ * DateTime indicator.
  */
-public class TypicalPriceIndicator extends CachedIndicator<Num> {
+public class DateTimeIndicator extends CachedIndicator<ZonedDateTime> {
 
-    public TypicalPriceIndicator(BarSeries series) {
-        super(series);
+	private final Function<Bar, ZonedDateTime> action;
+	
+    public DateTimeIndicator(BarSeries barSeries) {
+        this(barSeries, Bar::getBeginTime);
+    }
+    
+    public DateTimeIndicator(BarSeries barSeries, Function<Bar, ZonedDateTime> action) {
+        super(barSeries);
+        this.action = action;
     }
 
     @Override
-    protected Num calculate(int index) {
-        final Bar bar = getBarSeries().getBar(index);
-        final Num highPrice = bar.getHighPrice();
-        final Num lowPrice = bar.getLowPrice();
-        final Num closePrice = bar.getClosePrice();
-        return highPrice.plus(lowPrice).plus(closePrice).dividedBy(numOf(3));
+    protected ZonedDateTime calculate(int index) {
+    	Bar bar = getBarSeries().getBar(index);
+    	return this.action.apply(bar);
     }
 }

@@ -21,28 +21,39 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.ta4j.core.indicators.helpers;
+package org.ta4j.core.trading.rules;
 
-import org.ta4j.core.Bar;
-import org.ta4j.core.BarSeries;
-import org.ta4j.core.indicators.CachedIndicator;
-import org.ta4j.core.num.Num;
+import java.time.DayOfWeek;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.ta4j.core.TradingRecord;
+import org.ta4j.core.indicators.DateTimeIndicator;
 
 /**
- * Typical price indicator.
+ * Day of the week rule.
+ *
+ * Satisfied when the day of the week value of the DateTimeIndicator is equal to
+ * one of the DayOfWeek varargs
  */
-public class TypicalPriceIndicator extends CachedIndicator<Num> {
+public class DayOfWeekRule extends AbstractRule {
 
-    public TypicalPriceIndicator(BarSeries series) {
-        super(series);
-    }
+	private final Set<DayOfWeek> daysOfWeekSet;
+	private final DateTimeIndicator timeIndicator;
+	
+	public DayOfWeekRule(DateTimeIndicator timeIndicator, DayOfWeek... daysOfWeek) {
+		this.daysOfWeekSet = new HashSet<>(Arrays.asList(daysOfWeek));
+		this.timeIndicator = timeIndicator;
+	}
 
-    @Override
-    protected Num calculate(int index) {
-        final Bar bar = getBarSeries().getBar(index);
-        final Num highPrice = bar.getHighPrice();
-        final Num lowPrice = bar.getLowPrice();
-        final Num closePrice = bar.getClosePrice();
-        return highPrice.plus(lowPrice).plus(closePrice).dividedBy(numOf(3));
-    }
+	@Override
+	public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+		ZonedDateTime dateTime = this.timeIndicator.getValue(index);
+		boolean satisfied = daysOfWeekSet.contains(dateTime.getDayOfWeek());
+
+		traceIsSatisfied(index, satisfied);
+		return satisfied;
+	}
 }

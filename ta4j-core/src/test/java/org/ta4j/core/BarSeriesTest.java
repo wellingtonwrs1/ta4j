@@ -88,7 +88,7 @@ public class BarSeriesTest extends AbstractIndicatorTest<BarSeries, Num> {
         subSeries = defaultSeries.getSubSeries(2, 5);
         emptySeries = new BaseBarSeriesBuilder().withNumTypeOf(numFunction).build();
 
-        Strategy strategy = new BaseStrategy(new FixedRule(0, 2, 3, 6), new FixedRule(1, 4, 7, 8));
+        Strategy strategy = new BaseStrategy(new FixedRule(0, 2, 3, 6), new FixedRule(1, 4, 7, 8), null);
         strategy.setUnstablePeriod(2); // Strategy would need a real test class
 
     }
