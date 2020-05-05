@@ -25,7 +25,6 @@ package org.ta4j.core.trading.rules;
 
 import org.ta4j.core.Trade;
 import org.ta4j.core.TradingRecord;
-import org.ta4j.core.num.Num;
 
 import java.time.ZonedDateTime;
 
@@ -34,14 +33,14 @@ public class ExitOnExpireTimeRule extends AbstractRule {
     /**
      * The expiration time in minutes
      */
-    private final Num expirationTime;
+    private final int expirationTime;
 
     /**
      * Constructor.
      *
      * @param expirationTime to satisfied when time in minutes expired
      */
-    public ExitOnExpireTimeRule(Num expirationTime) {
+    public ExitOnExpireTimeRule(int expirationTime) {
         this.expirationTime = expirationTime;
     }
 
@@ -49,7 +48,7 @@ public class ExitOnExpireTimeRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
-        if (tradingRecord != null && expirationTime.isPositive()) {
+        if (tradingRecord != null && expirationTime > 0) {
             Trade currentTrade = tradingRecord.getCurrentTrade();
             satisfied = currentTrade.isOpened() && isExpirationTimeSatisfied(currentTrade.getEntry().getStartTime());
         }
@@ -58,7 +57,7 @@ public class ExitOnExpireTimeRule extends AbstractRule {
     }
 
     private boolean isExpirationTimeSatisfied(ZonedDateTime startTime) {
-        return startTime == null || startTime.plusMinutes(expirationTime.intValue()).compareTo(ZonedDateTime.now()) <= 0;
+        return startTime == null || startTime.plusMinutes(expirationTime).compareTo(ZonedDateTime.now()) <= 0;
     }
 
 }
