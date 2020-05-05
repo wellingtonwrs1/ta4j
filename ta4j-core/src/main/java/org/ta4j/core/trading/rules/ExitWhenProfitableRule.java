@@ -41,7 +41,7 @@ public class ExitWhenProfitableRule extends AbstractRule {
     /**
      * The expiration time in minutes
      */
-    private final Num expirationTime;
+    private final int expirationTime;
 
     /**
      * Constructor.
@@ -49,7 +49,7 @@ public class ExitWhenProfitableRule extends AbstractRule {
      * @param closePrice     the close price indicator
      * @param expirationTime to satisfied when profitable and time in minutes expired
      */
-    public ExitWhenProfitableRule(ClosePriceIndicator closePrice, Num expirationTime) {
+    public ExitWhenProfitableRule(ClosePriceIndicator closePrice, int expirationTime) {
         this.closePrice = closePrice;
         this.expirationTime = expirationTime;
     }
@@ -58,7 +58,7 @@ public class ExitWhenProfitableRule extends AbstractRule {
     public boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
-        if (tradingRecord != null && expirationTime.isPositive()) {
+        if (tradingRecord != null && expirationTime > 0) {
             Trade currentTrade = tradingRecord.getCurrentTrade();
             if (currentTrade.isOpened()) {
                 Order order = currentTrade.getEntry();
@@ -75,7 +75,7 @@ public class ExitWhenProfitableRule extends AbstractRule {
     }
 
     private boolean isExpirationTimeSatisfied(ZonedDateTime startTime) {
-        return startTime == null || startTime.plusMinutes(expirationTime.intValue()).compareTo(ZonedDateTime.now()) <= 0;
+        return startTime == null || startTime.plusMinutes(expirationTime).compareTo(ZonedDateTime.now()) <= 0;
     }
 
     private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
