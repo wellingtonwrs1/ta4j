@@ -115,7 +115,7 @@ public class StopGainRule extends AbstractRule {
     }
 
     private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
-        if (pips && pipPosition > 0) {
+        if (pips) {
             BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
             BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
             return entry.subtract(current).movePointRight(pipPosition).compareTo((BigDecimal) gainPercentage.getDelegate()) >= 0;
@@ -126,7 +126,7 @@ public class StopGainRule extends AbstractRule {
     }
 
     private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
-        if (pips && pipPosition > 0) {
+        if (pips) {
             BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
             BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
             return current.subtract(entry).movePointRight(pipPosition).compareTo((BigDecimal) gainPercentage.getDelegate()) >= 0;

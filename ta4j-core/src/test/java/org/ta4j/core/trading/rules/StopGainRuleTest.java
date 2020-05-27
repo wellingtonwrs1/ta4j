@@ -33,6 +33,7 @@ import org.ta4j.core.indicators.AbstractIndicatorTest;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
+import org.ta4j.core.num.PrecisionNum;
 
 import java.util.function.Function;
 
@@ -44,13 +45,13 @@ public class StopGainRuleTest extends AbstractIndicatorTest<BarSeries, Num> {
     private ClosePriceIndicator closePrice;
 
     public StopGainRuleTest(Function<Number, Num> numFunction) {
-        super(numFunction);
+        super(PrecisionNum::valueOf);
     }
 
     @Before
     public void setUp() {
         closePrice = new ClosePriceIndicator(
-                new MockBarSeries(numFunction, 100, 105, 110, 120, 150, 120, 160, 180, 170, 135, 104));
+                new MockBarSeries(numFunction, 100.0123, 100.0133, 100.0143, 100.0153, 100.0163, 100.0173, 100.0183, 100.0193, 100.0203, 100.0213, 100.0223));
     }
 
     @Test
@@ -59,13 +60,13 @@ public class StopGainRuleTest extends AbstractIndicatorTest<BarSeries, Num> {
         final Num tradedAmount = numOf(1);
 
         // 30% stop-gain
-        StopGainRule rule = new StopGainRule(closePrice, numOf(30));
+        StopGainRule rule = new StopGainRule(closePrice, numOf(2), true, 0);
 
         assertFalse(rule.isSatisfied(0, null));
         assertFalse(rule.isSatisfied(1, tradingRecord));
 
         // Enter at 108
-        tradingRecord.enter(2, numOf(108), tradedAmount);
+        tradingRecord.enter(2, numOf(100.0143), tradedAmount);
         assertFalse(rule.isSatisfied(2, tradingRecord));
         assertFalse(rule.isSatisfied(3, tradingRecord));
         assertTrue(rule.isSatisfied(4, tradingRecord));
@@ -73,7 +74,7 @@ public class StopGainRuleTest extends AbstractIndicatorTest<BarSeries, Num> {
         tradingRecord.exit(5);
 
         // Enter at 118
-        tradingRecord.enter(5, numOf(118), tradedAmount);
+        tradingRecord.enter(5, numOf(100.0173), tradedAmount);
         assertFalse(rule.isSatisfied(5, tradingRecord));
         assertTrue(rule.isSatisfied(6, tradingRecord));
         assertTrue(rule.isSatisfied(7, tradingRecord));
@@ -85,7 +86,7 @@ public class StopGainRuleTest extends AbstractIndicatorTest<BarSeries, Num> {
         final Num tradedAmount = numOf(1);
 
         // 30% stop-gain
-        StopGainRule rule = new StopGainRule(closePrice, numOf(10));
+        StopGainRule rule = new StopGainRule(closePrice, numOf(10), true, 0);
 
         assertFalse(rule.isSatisfied(0, null));
         assertFalse(rule.isSatisfied(1, tradingRecord));

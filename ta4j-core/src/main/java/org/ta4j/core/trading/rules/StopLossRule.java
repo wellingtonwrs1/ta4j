@@ -115,7 +115,7 @@ public class StopLossRule extends AbstractRule {
     }
 
     private boolean isSellStopSatisfied(Num entryPrice, Num currentPrice) {
-        if (pips && pipPosition > 0) {
+        if (pips) {
             BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
             BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
             return current.subtract(entry).movePointRight(pipPosition).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
@@ -126,7 +126,7 @@ public class StopLossRule extends AbstractRule {
     }
 
     private boolean isBuyStopSatisfied(Num entryPrice, Num currentPrice) {
-        if (pips && pipPosition > 0) {
+        if (pips) {
             BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
             BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
             return entry.subtract(current).movePointRight(pipPosition).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
