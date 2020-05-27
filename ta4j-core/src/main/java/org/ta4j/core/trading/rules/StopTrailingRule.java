@@ -34,8 +34,28 @@ public class StopTrailingRule extends AbstractRule {
         this.lossPercentage = lossPercentage;
         this.trailingPercentage = trailingPercentage;
         this.trailingSum = closePrice.numOf(0);
-        this.stopGainRule = new StopGainRule(closePrice, gainPercentage);
-        this.stopLossRule = new StopLossRule(closePrice, lossPercentage);
+        this.stopGainRule = new StopGainRule(closePrice, gainPercentage, false, 0);
+        this.stopLossRule = new StopLossRule(closePrice, lossPercentage, false, 0);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param closePrice         the close price indicator
+     * @param gainPercentage     the gain percentage
+     * @param lossPercentage     the loss percentage
+     * @param trailingPercentage the trailing percentage
+     * @param pips               the stop is calculate in pips
+     * @param pipPosition        the pip position
+     */
+    public StopTrailingRule(ClosePriceIndicator closePrice, Num gainPercentage, Num lossPercentage, Num trailingPercentage, boolean pips, int pipPosition) {
+        this.closePrice = closePrice;
+        this.gainPercentage = gainPercentage;
+        this.lossPercentage = lossPercentage;
+        this.trailingPercentage = trailingPercentage;
+        this.trailingSum = closePrice.numOf(0);
+        this.stopGainRule = new StopGainRule(closePrice, gainPercentage, pips, pipPosition);
+        this.stopLossRule = new StopLossRule(closePrice, lossPercentage, pips, pipPosition);
     }
 
     @Override

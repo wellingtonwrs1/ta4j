@@ -28,6 +28,8 @@ import org.ta4j.core.TradingRecord;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.num.Num;
 
+import java.math.BigDecimal;
+
 /**
  * A stop-gain rule.
  * <p>
@@ -50,6 +52,10 @@ public class StopGainRule extends AbstractRule {
      */
     private Num gainPercentage;
 
+    private final boolean pips;
+
+    private final int pipPosition;
+
     /**
      * Constructor.
      *
@@ -67,8 +73,22 @@ public class StopGainRule extends AbstractRule {
      * @param gainPercentage the gain percentage
      */
     public StopGainRule(ClosePriceIndicator closePrice, Num gainPercentage) {
+        this(closePrice, gainPercentage, false, 0);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param closePrice     the close price indicator
+     * @param gainPercentage the gain percentage
+     * @param pips           the stop is calculate in pips
+     * @param pipPosition    the pip position
+     */
+    public StopGainRule(ClosePriceIndicator closePrice, Num gainPercentage, boolean pips, int pipPosition) {
         this.closePrice = closePrice;
         this.gainPercentage = gainPercentage;
+        this.pips = pips;
+        this.pipPosition = pipPosition;
         this.HUNDRED = closePrice.numOf(100);
     }
 
@@ -95,12 +115,22 @@ public class StopGainRule extends AbstractRule {
     }
 
     private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
+        if (pips && pipPosition > 0) {
+            BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
+            BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
+            return entry.subtract(current).movePointRight(pipPosition).compareTo((BigDecimal) gainPercentage.getDelegate()) >= 0;
+        }
         Num lossRatioThreshold = HUNDRED.minus(gainPercentage).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
         return currentPrice.isLessThanOrEqual(threshold);
     }
 
     private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
+        if (pips && pipPosition > 0) {
+            BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
+            BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
+            return current.subtract(entry).movePointRight(pipPosition).compareTo((BigDecimal) gainPercentage.getDelegate()) >= 0;
+        }
         Num lossRatioThreshold = HUNDRED.plus(gainPercentage).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
         return currentPrice.isGreaterThanOrEqual(threshold);
