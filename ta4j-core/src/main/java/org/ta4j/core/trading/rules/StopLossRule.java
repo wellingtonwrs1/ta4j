@@ -118,7 +118,7 @@ public class StopLossRule extends AbstractRule {
         if (pips) {
             BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
             BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
-            return current.subtract(entry).movePointRight(pipPosition).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
+            return current.subtract(entry).movePointRight(pipPosition > 0 ? pipPosition : current.scale()).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
         }
         Num lossRatioThreshold = HUNDRED.plus(lossPercentage).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
@@ -129,7 +129,7 @@ public class StopLossRule extends AbstractRule {
         if (pips) {
             BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
             BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
-            return entry.subtract(current).movePointRight(pipPosition).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
+            return entry.subtract(current).movePointRight(pipPosition > 0 ? pipPosition : current.scale()).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
         }
         Num lossRatioThreshold = HUNDRED.minus(lossPercentage).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
