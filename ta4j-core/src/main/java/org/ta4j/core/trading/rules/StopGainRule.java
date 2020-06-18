@@ -48,9 +48,9 @@ public class StopGainRule extends AbstractRule {
     private final ClosePriceIndicator closePrice;
 
     /**
-     * The gain percentage
+     * The gain value
      */
-    private Num gainPercentage;
+    private Num gainValue;
 
     private final boolean pips;
 
@@ -59,34 +59,34 @@ public class StopGainRule extends AbstractRule {
     /**
      * Constructor.
      *
-     * @param closePrice     the close price indicator
-     * @param gainPercentage the gain percentage
+     * @param closePrice the close price indicator
+     * @param gainValue  the gain value
      */
-    public StopGainRule(ClosePriceIndicator closePrice, Number gainPercentage) {
-        this(closePrice, closePrice.numOf(gainPercentage));
+    public StopGainRule(ClosePriceIndicator closePrice, Number gainValue) {
+        this(closePrice, closePrice.numOf(gainValue));
     }
 
     /**
      * Constructor.
      *
-     * @param closePrice     the close price indicator
-     * @param gainPercentage the gain percentage
+     * @param closePrice the close price indicator
+     * @param gainValue  the gain value
      */
-    public StopGainRule(ClosePriceIndicator closePrice, Num gainPercentage) {
-        this(closePrice, gainPercentage, false, 0);
+    public StopGainRule(ClosePriceIndicator closePrice, Num gainValue) {
+        this(closePrice, gainValue, false, 0);
     }
 
     /**
      * Constructor.
      *
-     * @param closePrice     the close price indicator
-     * @param gainPercentage the gain percentage
-     * @param pips           the stop is calculate in pips
-     * @param pipPosition    the pip position
+     * @param closePrice  the close price indicator
+     * @param gainValue   the gain value
+     * @param pips        the stop is calculate in pips
+     * @param pipPosition the pip position
      */
-    public StopGainRule(ClosePriceIndicator closePrice, Num gainPercentage, boolean pips, int pipPosition) {
+    public StopGainRule(ClosePriceIndicator closePrice, Num gainValue, boolean pips, int pipPosition) {
         this.closePrice = closePrice;
-        this.gainPercentage = gainPercentage;
+        this.gainValue = gainValue;
         this.pips = pips;
         this.pipPosition = pipPosition;
         this.HUNDRED = closePrice.numOf(100);
@@ -116,27 +116,33 @@ public class StopGainRule extends AbstractRule {
 
     private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
-            BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
-            BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
-            return entry.subtract(current).movePointRight(pipPosition > 0 ? pipPosition : current.scale()).compareTo((BigDecimal) gainPercentage.getDelegate()) >= 0;
+            return calculatePips(entryPrice, currentPrice, true);
         }
-        Num lossRatioThreshold = HUNDRED.minus(gainPercentage).dividedBy(HUNDRED);
+        Num lossRatioThreshold = HUNDRED.minus(gainValue).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
         return currentPrice.isLessThanOrEqual(threshold);
     }
 
     private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
-            BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
-            BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
-            return current.subtract(entry).movePointRight(pipPosition > 0 ? pipPosition : current.scale()).compareTo((BigDecimal) gainPercentage.getDelegate()) >= 0;
+            return calculatePips(entryPrice, currentPrice, false);
         }
-        Num lossRatioThreshold = HUNDRED.plus(gainPercentage).dividedBy(HUNDRED);
+        Num lossRatioThreshold = HUNDRED.plus(gainValue).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
         return currentPrice.isGreaterThanOrEqual(threshold);
     }
 
-    public void setGainPercentage(Num gainPercentage) {
-        this.gainPercentage = gainPercentage;
+    private boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {
+        BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
+        BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
+        int position = pipPosition > 0 ? pipPosition : current.scale();
+        if (isSell) {
+            return entry.subtract(current).movePointRight(position).compareTo((BigDecimal) gainValue.getDelegate()) >= 0;
+        }
+        return current.subtract(entry).movePointRight(position).compareTo((BigDecimal) gainValue.getDelegate()) >= 0;
+    }
+
+    public void setGainValue(Num gainValue) {
+        this.gainValue = gainValue;
     }
 }
