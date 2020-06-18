@@ -48,9 +48,9 @@ public class StopLossRule extends AbstractRule {
     private final ClosePriceIndicator closePrice;
 
     /**
-     * The loss percentage
+     * The loss value
      */
-    private Num lossPercentage;
+    private Num lossValue;
 
     private final boolean pips;
 
@@ -59,34 +59,34 @@ public class StopLossRule extends AbstractRule {
     /**
      * Constructor.
      *
-     * @param closePrice     the close price indicator
-     * @param lossPercentage the loss percentage
+     * @param closePrice the close price indicator
+     * @param lossValue  the loss value
      */
-    public StopLossRule(ClosePriceIndicator closePrice, Number lossPercentage) {
-        this(closePrice, closePrice.numOf(lossPercentage));
+    public StopLossRule(ClosePriceIndicator closePrice, Number lossValue) {
+        this(closePrice, closePrice.numOf(lossValue));
     }
 
     /**
      * Constructor.
      *
-     * @param closePrice     the close price indicator
-     * @param lossPercentage the loss percentage
+     * @param closePrice the close price indicator
+     * @param lossValue  the loss value
      */
-    public StopLossRule(ClosePriceIndicator closePrice, Num lossPercentage) {
-        this(closePrice, lossPercentage, false, 0);
+    public StopLossRule(ClosePriceIndicator closePrice, Num lossValue) {
+        this(closePrice, lossValue, false, 0);
     }
 
     /**
      * Constructor.
      *
-     * @param closePrice     the close price indicator
-     * @param lossPercentage the loss percentage
-     * @param pips           the stop is calculate in pips
-     * @param pipPosition    the pip position
+     * @param closePrice  the close price indicator
+     * @param lossValue   the loss value
+     * @param pips        the stop is calculate in pips
+     * @param pipPosition the pip position
      */
-    public StopLossRule(ClosePriceIndicator closePrice, Num lossPercentage, boolean pips, int pipPosition) {
+    public StopLossRule(ClosePriceIndicator closePrice, Num lossValue, boolean pips, int pipPosition) {
         this.closePrice = closePrice;
-        this.lossPercentage = lossPercentage;
+        this.lossValue = lossValue;
         this.pips = pips;
         this.pipPosition = pipPosition;
         this.HUNDRED = closePrice.numOf(100);
@@ -116,27 +116,33 @@ public class StopLossRule extends AbstractRule {
 
     private boolean isSellStopSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
-            BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
-            BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
-            return current.subtract(entry).movePointRight(pipPosition > 0 ? pipPosition : current.scale()).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
+            return calculatePips(entryPrice, currentPrice, true);
         }
-        Num lossRatioThreshold = HUNDRED.plus(lossPercentage).dividedBy(HUNDRED);
+        Num lossRatioThreshold = HUNDRED.plus(lossValue).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
         return currentPrice.isGreaterThanOrEqual(threshold);
     }
 
     private boolean isBuyStopSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
-            BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
-            BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
-            return entry.subtract(current).movePointRight(pipPosition > 0 ? pipPosition : current.scale()).compareTo((BigDecimal) lossPercentage.getDelegate()) >= 0;
+            return calculatePips(entryPrice, currentPrice, false);
         }
-        Num lossRatioThreshold = HUNDRED.minus(lossPercentage).dividedBy(HUNDRED);
+        Num lossRatioThreshold = HUNDRED.minus(lossValue).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
         return currentPrice.isLessThanOrEqual(threshold);
     }
 
-    public void setLossPercentage(Num lossPercentage) {
-        this.lossPercentage = lossPercentage;
+    private boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {
+        BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
+        BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
+        int position = pipPosition > 0 ? pipPosition : current.scale();
+        if (isSell) {
+            return current.subtract(entry).movePointRight(position).compareTo((BigDecimal) lossValue.getDelegate()) >= 0;
+        }
+        return entry.subtract(current).movePointRight(position).compareTo((BigDecimal) lossValue.getDelegate()) >= 0;
+    }
+
+    public void setLossValue(Num lossValue) {
+        this.lossValue = lossValue;
     }
 }

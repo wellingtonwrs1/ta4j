@@ -8,11 +8,11 @@ public class StopTrailingRule extends AbstractRule {
 
     private final ClosePriceIndicator closePrice;
 
-    private final Num gainPercentage;
+    private final Num gainValue;
 
-    private final Num lossPercentage;
+    private final Num lossValue;
 
-    private final Num trailingPercentage;
+    private final Num trailingValue;
 
     private Num trailingSum;
 
@@ -23,39 +23,39 @@ public class StopTrailingRule extends AbstractRule {
     /**
      * Constructor
      *
-     * @param closePrice         the close price indicator
-     * @param gainPercentage     the gain percentage
-     * @param lossPercentage     the loss percentage
-     * @param trailingPercentage the trailing percentage
+     * @param closePrice    the close price indicator
+     * @param gainValue     the gain value
+     * @param lossValue     the loss value
+     * @param trailingValue the trailing value
      */
-    public StopTrailingRule(ClosePriceIndicator closePrice, Num gainPercentage, Num lossPercentage, Num trailingPercentage) {
+    public StopTrailingRule(ClosePriceIndicator closePrice, Num gainValue, Num lossValue, Num trailingValue) {
         this.closePrice = closePrice;
-        this.gainPercentage = gainPercentage;
-        this.lossPercentage = lossPercentage;
-        this.trailingPercentage = trailingPercentage;
+        this.gainValue = gainValue;
+        this.lossValue = lossValue;
+        this.trailingValue = trailingValue;
         this.trailingSum = closePrice.numOf(0);
-        this.stopGainRule = new StopGainRule(closePrice, gainPercentage, false, 0);
-        this.stopLossRule = new StopLossRule(closePrice, lossPercentage, false, 0);
+        this.stopGainRule = new StopGainRule(closePrice, gainValue, false, 0);
+        this.stopLossRule = new StopLossRule(closePrice, lossValue, false, 0);
     }
 
     /**
      * Constructor
      *
-     * @param closePrice         the close price indicator
-     * @param gainPercentage     the gain percentage
-     * @param lossPercentage     the loss percentage
-     * @param trailingPercentage the trailing percentage
-     * @param pips               the stop is calculate in pips
-     * @param pipPosition        the pip position
+     * @param closePrice    the close price indicator
+     * @param gainValue     the gain value
+     * @param lossValue     the loss value
+     * @param trailingValue the trailing value
+     * @param pips          the stop is calculate in pips
+     * @param pipPosition   the pip position
      */
-    public StopTrailingRule(ClosePriceIndicator closePrice, Num gainPercentage, Num lossPercentage, Num trailingPercentage, boolean pips, int pipPosition) {
+    public StopTrailingRule(ClosePriceIndicator closePrice, Num gainValue, Num lossValue, Num trailingValue, boolean pips, int pipPosition) {
         this.closePrice = closePrice;
-        this.gainPercentage = gainPercentage;
-        this.lossPercentage = lossPercentage;
-        this.trailingPercentage = trailingPercentage;
+        this.gainValue = gainValue;
+        this.lossValue = lossValue;
+        this.trailingValue = trailingValue;
         this.trailingSum = closePrice.numOf(0);
-        this.stopGainRule = new StopGainRule(closePrice, gainPercentage, pips, pipPosition);
-        this.stopLossRule = new StopLossRule(closePrice, lossPercentage, pips, pipPosition);
+        this.stopGainRule = new StopGainRule(closePrice, gainValue, pips, pipPosition);
+        this.stopLossRule = new StopLossRule(closePrice, lossValue, pips, pipPosition);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class StopTrailingRule extends AbstractRule {
         boolean satisfied = false;
         // No trading history or no trade opened, no trailing
         if (tradingRecord != null) {
-            this.updatePercentage();
+            this.updateValue();
             if (this.stopGainRule.isSatisfied(index, tradingRecord) && !this.isTrailingStopped()) {
                 this.trailingSum = this.closePrice.numOf(0);
                 satisfied = true;
@@ -77,21 +77,21 @@ public class StopTrailingRule extends AbstractRule {
     }
 
     private boolean isTrailingStopped() {
-        if (this.trailingPercentage != null) {
-            this.trailingSum = this.trailingSum.plus(this.trailingPercentage);
+        if (this.trailingValue != null) {
+            this.trailingSum = this.trailingSum.plus(this.trailingValue);
             return true;
         }
         return false;
     }
 
-    private void updatePercentage() {
+    private void updateValue() {
         if (this.trailingSum.isPositive()) {
-            Num nextGainPercentage = this.gainPercentage.plus(this.trailingSum);
-            this.stopGainRule.setGainPercentage(nextGainPercentage);
-            this.stopLossRule.setLossPercentage(nextGainPercentage.minus(this.trailingPercentage).multipliedBy(this.closePrice.numOf(-1)));
+            Num nextGainValue = this.gainValue.plus(this.trailingSum);
+            this.stopGainRule.setGainValue(nextGainValue);
+            this.stopLossRule.setLossValue(nextGainValue.minus(this.trailingValue).multipliedBy(this.closePrice.numOf(-1)));
         } else {
-            this.stopGainRule.setGainPercentage(this.gainPercentage);
-            this.stopLossRule.setLossPercentage(this.lossPercentage);
+            this.stopGainRule.setGainValue(this.gainValue);
+            this.stopLossRule.setLossValue(this.lossValue);
         }
     }
 
