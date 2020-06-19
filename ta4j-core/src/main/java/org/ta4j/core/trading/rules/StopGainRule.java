@@ -135,7 +135,7 @@ public class StopGainRule extends AbstractRule {
     private boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {
         BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
         BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
-        int position = pipPosition > 0 ? pipPosition : current.scale();
+        int position = pipPosition > 0 ? pipPosition : entry.scale();
         if (isSell) {
             return entry.subtract(current).movePointRight(position).compareTo((BigDecimal) gainValue.getDelegate()) >= 0;
         }
