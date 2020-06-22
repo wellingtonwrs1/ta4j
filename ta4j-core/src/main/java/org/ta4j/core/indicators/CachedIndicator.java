@@ -113,10 +113,7 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
                 } else {
                     // Result covered by current cache
                     int resultInnerIndex = results.size() - 1 - (highestResultIndex - index);
-                    if (resultInnerIndex < 0 || resultInnerIndex >= results.size()) {
-                        resultInnerIndex = index;
-                    }
-                    result = results.get(resultInnerIndex);
+                    result = getResult(resultInnerIndex);
                     if (result == null) {
                         result = calculate(index);
                         results.set(resultInnerIndex, result);
@@ -126,6 +123,15 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
 
         }
         return result;
+    }
+
+    private T getResult(int resultInnerIndex) {
+        try {
+            return results.get(resultInnerIndex);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
+        return null;
     }
 
     /**
