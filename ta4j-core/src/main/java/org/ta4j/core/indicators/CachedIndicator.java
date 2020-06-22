@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * Cached {@link Indicator indicator}.
- *
+ * <p>
  * Caches the constructor of the indicator. Avoid to calculate the same index of
  * the indicator twice.
  */
@@ -113,7 +113,7 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
                 } else {
                     // Result covered by current cache
                     int resultInnerIndex = results.size() - 1 - (highestResultIndex - index);
-                    if (resultInnerIndex < 0) {
+                    if (resultInnerIndex < 0 || resultInnerIndex >= results.size()) {
                         resultInnerIndex = index;
                     }
                     result = results.get(resultInnerIndex);
