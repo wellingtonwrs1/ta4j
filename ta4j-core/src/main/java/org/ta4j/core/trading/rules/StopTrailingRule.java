@@ -77,7 +77,7 @@ public class StopTrailingRule extends AbstractRule {
     }
 
     private boolean isTrailingStopped() {
-        if (this.trailingValue != null) {
+        if (this.trailingValue != null && this.trailingValue.isPositive()) {
             this.trailingSum = this.trailingSum.plus(this.trailingValue);
             return true;
         }
@@ -88,7 +88,8 @@ public class StopTrailingRule extends AbstractRule {
         if (this.trailingSum.isPositive()) {
             Num nextGainValue = this.gainValue.plus(this.trailingSum);
             this.stopGainRule.setGainValue(nextGainValue);
-            this.stopLossRule.setLossValue(nextGainValue.minus(this.trailingValue).multipliedBy(this.closePrice.numOf(-1)));
+//            this.stopLossRule.setLossValue(nextGainValue.minus(this.trailingValue).multipliedBy(this.closePrice.numOf(-1)));
+            this.stopLossRule.setLossValue(this.trailingSum.multipliedBy(this.closePrice.numOf(-1)));
         } else {
             this.stopGainRule.setGainValue(this.gainValue);
             this.stopLossRule.setLossValue(this.lossValue);
