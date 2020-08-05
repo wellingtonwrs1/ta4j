@@ -381,10 +381,22 @@ public class BaseBarSeries implements BarSeries {
     /**
      * @param bar the <code>Bar</code> to be added
      * @apiNote to add bar data directly use #addBar(Duration, ZonedDateTime, Num,
-     *          Num, Num, Num, Num)
+     * Num, Num, Num, Num)
      */
     @Override
-    public synchronized void addBar(Bar bar, boolean replace) {
+    public synchronized boolean changeBar(Bar bar) {
+        boolean replace = !this.isEmpty() && this.getLastBar().getEndTime().compareTo(bar.getEndTime()) == 0;
+        this.addBar(bar, replace);
+        return !replace;
+    }
+
+    /**
+     * @param bar the <code>Bar</code> to be added
+     * @apiNote to add bar data directly use #addBar(Duration, ZonedDateTime, Num,
+     * Num, Num, Num, Num)
+     */
+    @Override
+    public void addBar(Bar bar, boolean replace) {
         Objects.requireNonNull(bar);
         if (!checkBar(bar)) {
             throw new IllegalArgumentException(

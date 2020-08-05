@@ -159,6 +159,8 @@ public interface BarSeries extends Serializable {
         addBar(bar, false);
     }
 
+    boolean changeBar(Bar bar);
+
     /**
      * Adds a bar at the end of the series.
      *
