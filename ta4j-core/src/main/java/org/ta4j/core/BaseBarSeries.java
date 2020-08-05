@@ -384,7 +384,7 @@ public class BaseBarSeries implements BarSeries {
      *          Num, Num, Num, Num)
      */
     @Override
-    public void addBar(Bar bar, boolean replace) {
+    public synchronized void addBar(Bar bar, boolean replace) {
         Objects.requireNonNull(bar);
         if (!checkBar(bar)) {
             throw new IllegalArgumentException(
