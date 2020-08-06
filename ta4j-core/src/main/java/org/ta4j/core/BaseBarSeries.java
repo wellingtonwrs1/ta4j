@@ -396,7 +396,7 @@ public class BaseBarSeries implements BarSeries {
      * Num, Num, Num, Num)
      */
     @Override
-    public void addBar(Bar bar, boolean replace) {
+    public synchronized void addBar(Bar bar, boolean replace) {
         Objects.requireNonNull(bar);
         if (!checkBar(bar)) {
             throw new IllegalArgumentException(
@@ -422,7 +422,7 @@ public class BaseBarSeries implements BarSeries {
             // Begin index set to 0 only if it wasn't initialized
             seriesBeginIndex = 0;
         }
-        seriesEndIndex++;
+        seriesEndIndex = bars.size() - 1;
         removeExceedingBars();
     }
 
