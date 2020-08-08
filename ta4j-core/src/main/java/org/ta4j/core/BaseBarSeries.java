@@ -312,7 +312,7 @@ public class BaseBarSeries implements BarSeries {
     }
 
     @Override
-    public Bar getBar(int i) {
+    public synchronized Bar getBar(int i) {
         int innerIndex = i - removedBarsCount;
         if (innerIndex < 0) {
             if (i < 0) {
