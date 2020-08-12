@@ -120,7 +120,16 @@ public class StopLossRule extends AbstractRule {
         }
         Num lossRatioThreshold = HUNDRED.plus(lossValue).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isGreaterThanOrEqual(threshold);
+        boolean isSatisfied = currentPrice.isGreaterThanOrEqual(threshold);
+        this.traceLog("SELL", entryPrice, currentPrice, lossRatioThreshold, threshold, isSatisfied);
+        return isSatisfied;
+    }
+
+    private void traceLog(String type, Num entryPrice, Num currentPrice, Num lossRatioThreshold, Num threshold, boolean isSatisfied) {
+        if (isSatisfied) {
+            log.debug("stopLossRule(type: {}, lossValue: {}, lossRatioThreshold: {}, threshold: {}, entryPrice: {}, currentPrice: {})",
+                    type, lossValue, lossRatioThreshold, threshold, entryPrice, currentPrice);
+        }
     }
 
     private boolean isBuyStopSatisfied(Num entryPrice, Num currentPrice) {
@@ -129,7 +138,9 @@ public class StopLossRule extends AbstractRule {
         }
         Num lossRatioThreshold = HUNDRED.minus(lossValue).dividedBy(HUNDRED);
         Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isLessThanOrEqual(threshold);
+        boolean isSatisfied = currentPrice.isLessThanOrEqual(threshold);
+        this.traceLog("BUY", entryPrice, currentPrice, lossRatioThreshold, threshold, isSatisfied);
+        return isSatisfied;
     }
 
     private boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {

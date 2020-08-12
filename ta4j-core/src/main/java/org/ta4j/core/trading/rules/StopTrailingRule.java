@@ -63,7 +63,7 @@ public class StopTrailingRule extends AbstractRule {
         boolean satisfied = false;
         // No trading history or no trade opened, no trailing
         if (tradingRecord != null) {
-            this.updateValue();
+            this.updateTrailingValue();
             if (this.stopGainRule.isSatisfied(index, tradingRecord) && !this.isTrailingStopped()) {
                 this.trailingSum = this.closePrice.numOf(0);
                 satisfied = true;
@@ -84,15 +84,15 @@ public class StopTrailingRule extends AbstractRule {
         return false;
     }
 
-    private void updateValue() {
-        if (this.trailingSum.isPositive()) {
-            Num nextGainValue = this.gainValue.plus(this.trailingSum);
-            this.stopGainRule.setGainValue(nextGainValue);
-//            this.stopLossRule.setLossValue(nextGainValue.minus(this.trailingValue).multipliedBy(this.closePrice.numOf(-1)));
-            this.stopLossRule.setLossValue(this.trailingSum.multipliedBy(this.closePrice.numOf(-1)));
-        } else {
-            this.stopGainRule.setGainValue(this.gainValue);
-            this.stopLossRule.setLossValue(this.lossValue);
+    private void updateTrailingValue() {
+        if (this.trailingValue != null && this.trailingValue.isPositive()) {
+            if (this.trailingSum.isPositive()) {
+                this.stopGainRule.setGainValue(this.gainValue.plus(this.trailingSum));
+                this.stopLossRule.setLossValue(this.trailingSum.multipliedBy(this.closePrice.numOf(-1)));
+            } else {
+                this.stopGainRule.setGainValue(this.gainValue);
+                this.stopLossRule.setLossValue(this.lossValue);
+            }
         }
     }
 
