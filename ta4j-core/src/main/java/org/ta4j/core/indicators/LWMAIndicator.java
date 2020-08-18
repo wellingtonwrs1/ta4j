@@ -46,7 +46,7 @@ public class LWMAIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num sum = zero;
         Num denominator = zero;
         int count = 0;

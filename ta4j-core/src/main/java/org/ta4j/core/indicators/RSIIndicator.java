@@ -45,7 +45,7 @@ public class RSIIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         // compute relative strength
         Num averageGain = averageGainIndicator.getValue(index);
         Num averageLoss = averageLossIndicator.getValue(index);

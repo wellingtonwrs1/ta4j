@@ -51,7 +51,7 @@ public class DifferenceIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return first.getValue(index).minus(second.getValue(index));
     }
 }

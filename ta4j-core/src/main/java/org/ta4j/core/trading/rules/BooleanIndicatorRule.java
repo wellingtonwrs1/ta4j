@@ -45,7 +45,7 @@ public class BooleanIndicatorRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         final boolean satisfied = indicator.getValue(index);
         traceIsSatisfied(index, satisfied);
         return satisfied;

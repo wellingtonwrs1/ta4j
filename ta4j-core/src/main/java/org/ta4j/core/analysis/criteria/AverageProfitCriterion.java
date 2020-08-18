@@ -42,7 +42,7 @@ public class AverageProfitCriterion extends AbstractAnalysisCriterion {
     private AnalysisCriterion numberOfBars = new NumberOfBarsCriterion();
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         Num bars = numberOfBars.calculate(series, tradingRecord);
         if (bars.isEqual(series.numOf(0))) {
             return series.numOf(1);
@@ -52,7 +52,7 @@ public class AverageProfitCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         Num bars = numberOfBars.calculate(series, trade);
         if (bars.isEqual(series.numOf(0))) {
             return series.numOf(1);
@@ -62,7 +62,7 @@ public class AverageProfitCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isGreaterThan(criterionValue2);
     }
 }

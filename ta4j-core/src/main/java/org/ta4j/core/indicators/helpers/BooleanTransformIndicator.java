@@ -145,7 +145,7 @@ public class BooleanTransformIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
 
         Num val = indicator.getValue(index);
 

@@ -58,7 +58,7 @@ public class PreviousValueIndicator extends CachedIndicator<Num> {
         this.indicator = indicator;
     }
 
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         int previousValue = Math.max(0, (index - n));
         return this.indicator.getValue(previousValue);
     }

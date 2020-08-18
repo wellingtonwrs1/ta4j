@@ -79,11 +79,11 @@ public class PivotPointIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return calcPivotPoint(getBarsOfPreviousPeriod(index));
     }
 
-    private Num calcPivotPoint(List<Integer> barsOfPreviousPeriod) {
+    private synchronized Num calcPivotPoint(List<Integer> barsOfPreviousPeriod) {
         if (barsOfPreviousPeriod.isEmpty())
             return NaN;
         Bar bar = getBarSeries().getBar(barsOfPreviousPeriod.get(0));
@@ -103,7 +103,7 @@ public class PivotPointIndicator extends RecursiveCachedIndicator<Num> {
      * @param index index of the current bar
      * @return list of indices of the bars of the previous period
      */
-    public List<Integer> getBarsOfPreviousPeriod(int index) {
+    public synchronized List<Integer> getBarsOfPreviousPeriod(int index) {
         List<Integer> previousBars = new ArrayList<>();
 
         if (timeLevel == TimeLevel.BARBASED) {
@@ -132,7 +132,7 @@ public class PivotPointIndicator extends RecursiveCachedIndicator<Num> {
         return previousBars;
     }
 
-    private long getPreviousPeriod(Bar bar, int indexOfPreviousBar) {
+    private synchronized long getPreviousPeriod(Bar bar, int indexOfPreviousBar) {
         switch (timeLevel) {
         case DAY: // return previous day
             int prevCalendarDay = bar.getEndTime().minusDays(1).getDayOfYear();
@@ -151,7 +151,7 @@ public class PivotPointIndicator extends RecursiveCachedIndicator<Num> {
         }
     }
 
-    private long getPeriod(Bar bar) {
+    private synchronized long getPeriod(Bar bar) {
         switch (timeLevel) {
         case DAY: // return previous day
             return bar.getEndTime().getDayOfYear();

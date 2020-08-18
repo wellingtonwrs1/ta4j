@@ -60,7 +60,7 @@ public class MassIndexIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         final int startIndex = Math.max(0, index - barCount + 1);
         Num massIndex = numOf(0);
         for (int i = startIndex; i <= index; i++) {

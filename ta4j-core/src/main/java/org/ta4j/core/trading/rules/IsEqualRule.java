@@ -77,7 +77,7 @@ public class IsEqualRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         final boolean satisfied = first.getValue(index).isEqual(second.getValue(index));
         traceIsSatisfied(index, satisfied);
         return satisfied;

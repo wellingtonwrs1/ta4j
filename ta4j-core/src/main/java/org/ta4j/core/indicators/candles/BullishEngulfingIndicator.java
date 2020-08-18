@@ -60,7 +60,7 @@ public class BullishEngulfingIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
         if (index - this.subtract < 1) {
             // Engulfing is a 2-candle pattern
             return false;

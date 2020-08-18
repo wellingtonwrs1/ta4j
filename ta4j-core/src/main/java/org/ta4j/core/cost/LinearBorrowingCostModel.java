@@ -43,7 +43,7 @@ public class LinearBorrowingCostModel implements CostModel {
         this.feePerPeriod = feePerPeriod;
     }
 
-    public Num calculate(Num price, Num amount) {
+    public synchronized Num calculate(Num price, Num amount) {
         // borrowing costs depend on borrowed period
         return price.numOf(0);
     }
@@ -54,7 +54,7 @@ public class LinearBorrowingCostModel implements CostModel {
      * @param trade the trade
      * @return the absolute order cost
      */
-    public Num calculate(Trade trade) {
+    public synchronized Num calculate(Trade trade) {
         if (trade.isOpened()) {
             throw new IllegalArgumentException("Trade is not closed. Final index of observation needs to be provided.");
         }
@@ -68,7 +68,7 @@ public class LinearBorrowingCostModel implements CostModel {
      * @param currentIndex final bar index to be considered (for open trades)
      * @return the absolute order cost
      */
-    public Num calculate(Trade trade, int currentIndex) {
+    public synchronized Num calculate(Trade trade, int currentIndex) {
         Order entryOrder = trade.getEntry();
         Order exitOrder = trade.getExit();
         Num borrowingCost = trade.getEntry().getNetPrice().numOf(0);
@@ -91,7 +91,7 @@ public class LinearBorrowingCostModel implements CostModel {
      * @param tradedValue    value of the trade initial trade position
      * @return the absolute borrowing cost
      */
-    private Num getHoldingCostForPeriods(int tradingPeriods, Num tradedValue) {
+    private synchronized Num getHoldingCostForPeriods(int tradingPeriods, Num tradedValue) {
         return tradedValue
                 .multipliedBy(tradedValue.numOf(tradingPeriods).multipliedBy(tradedValue.numOf(feePerPeriod)));
     }
@@ -101,7 +101,7 @@ public class LinearBorrowingCostModel implements CostModel {
      * 
      * @param otherModel model to compare with
      */
-    public boolean equals(CostModel otherModel) {
+    public synchronized boolean equals(CostModel otherModel) {
         boolean equality = false;
         if (this.getClass().equals(otherModel.getClass())) {
             equality = ((LinearBorrowingCostModel) otherModel).feePerPeriod == this.feePerPeriod;

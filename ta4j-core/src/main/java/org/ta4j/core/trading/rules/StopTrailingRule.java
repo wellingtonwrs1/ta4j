@@ -59,7 +59,7 @@ public class StopTrailingRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no trailing
         if (tradingRecord != null) {
@@ -76,7 +76,7 @@ public class StopTrailingRule extends AbstractRule {
         return satisfied;
     }
 
-    private boolean isTrailingStopped() {
+    private synchronized boolean isTrailingStopped() {
         if (this.trailingValue != null && this.trailingValue.isPositive()) {
             this.trailingSum = this.trailingSum.plus(this.trailingValue);
             return true;
@@ -84,7 +84,7 @@ public class StopTrailingRule extends AbstractRule {
         return false;
     }
 
-    private void updateTrailingValue() {
+    private synchronized void updateTrailingValue() {
         if (this.trailingValue != null && this.trailingValue.isPositive()) {
             if (this.trailingSum.isPositive()) {
                 this.stopGainRule.setGainValue(this.gainValue.plus(this.trailingSum));

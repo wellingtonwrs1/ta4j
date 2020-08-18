@@ -42,7 +42,7 @@ public class RewardRiskRatioCriterion extends AbstractAnalysisCriterion {
     private final AnalysisCriterion maxDrawdownCriterion = new MaximumDrawdownCriterion();
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         final Num maxDrawdown = maxDrawdownCriterion.calculate(series, tradingRecord);
         if (maxDrawdown.isZero()) {
             return NaN.NaN;
@@ -53,12 +53,12 @@ public class RewardRiskRatioCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isGreaterThan(criterionValue2);
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         final Num maxDrawdown = maxDrawdownCriterion.calculate(series, trade);
         if (maxDrawdown.isZero()) {
             return NaN.NaN;

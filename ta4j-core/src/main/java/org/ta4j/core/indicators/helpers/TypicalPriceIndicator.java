@@ -38,7 +38,7 @@ public class TypicalPriceIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         final Bar bar = getBarSeries().getBar(index);
         final Num highPrice = bar.getHighPrice();
         final Num lowPrice = bar.getLowPrice();

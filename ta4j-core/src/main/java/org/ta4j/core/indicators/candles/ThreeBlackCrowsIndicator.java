@@ -68,7 +68,7 @@ public class ThreeBlackCrowsIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
         if (index < 3) {
             // We need 4 candles: 1 white, 3 black
             return false;
@@ -82,7 +82,7 @@ public class ThreeBlackCrowsIndicator extends CachedIndicator<Boolean> {
      * @param index the bar/candle index
      * @return true if the bar/candle has a very short lower shadow, false otherwise
      */
-    private boolean hasVeryShortLowerShadow(int index) {
+    private synchronized boolean hasVeryShortLowerShadow(int index) {
         Num currentLowerShadow = lowerShadowInd.getValue(index);
         // We use the white candle index to remove to bias of the previous crows
         Num averageLowerShadow = averageLowerShadowInd.getValue(whiteCandleIndex);
@@ -94,7 +94,7 @@ public class ThreeBlackCrowsIndicator extends CachedIndicator<Boolean> {
      * @param index the current bar/candle index
      * @return true if the current bar/candle is declining, false otherwise
      */
-    private boolean isDeclining(int index) {
+    private synchronized boolean isDeclining(int index) {
         Bar prevBar = getBarSeries().getBar(index - 1);
         Bar currBar = getBarSeries().getBar(index);
         final Num prevOpenPrice = prevBar.getOpenPrice();
@@ -112,7 +112,7 @@ public class ThreeBlackCrowsIndicator extends CachedIndicator<Boolean> {
      * @param index the current bar/candle index
      * @return true if the current bar/candle is a black crow, false otherwise
      */
-    private boolean isBlackCrow(int index) {
+    private synchronized boolean isBlackCrow(int index) {
         Bar prevBar = getBarSeries().getBar(index - 1);
         Bar currBar = getBarSeries().getBar(index);
         if (currBar.isBearish()) {

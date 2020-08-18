@@ -56,13 +56,13 @@ public class ExpectedShortfallCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         Returns returns = new Returns(series, tradingRecord, Returns.ReturnType.LOG);
         return calculateES(returns, confidence);
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         if (trade != null && trade.getEntry() != null && trade.getExit() != null) {
             Returns returns = new Returns(series, trade, Returns.ReturnType.LOG);
             return calculateES(returns, confidence);
@@ -77,7 +77,7 @@ public class ExpectedShortfallCriterion extends AbstractAnalysisCriterion {
      * @param confidence the confidence level
      * @return the relative Expected Shortfall
      */
-    private static Num calculateES(Returns returns, double confidence) {
+    private synchronized static Num calculateES(Returns returns, double confidence) {
         // select non-NaN returns
         List<Num> returnRates = returns.getValues().subList(1, returns.getSize() + 1);
         Num zero = returns.numOf(0);
@@ -105,7 +105,7 @@ public class ExpectedShortfallCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isGreaterThan(criterionValue2);
     }
 }

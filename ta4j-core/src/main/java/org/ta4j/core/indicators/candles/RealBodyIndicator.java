@@ -50,7 +50,7 @@ public class RealBodyIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Bar t = getBarSeries().getBar(index);
         return t.getClosePrice().minus(t.getOpenPrice());
     }

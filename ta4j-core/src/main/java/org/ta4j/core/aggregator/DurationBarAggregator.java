@@ -73,7 +73,7 @@ public class DurationBarAggregator implements BarAggregator {
      * @return the aggregated bars with new <code>timePeriod</code>
      */
     @Override
-    public List<Bar> aggregate(List<Bar> bars) {
+    public synchronized List<Bar> aggregate(List<Bar> bars) {
         final List<Bar> aggregated = new ArrayList<>();
         if (bars.isEmpty()) {
             return aggregated;

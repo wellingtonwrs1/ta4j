@@ -36,13 +36,13 @@ import org.ta4j.core.num.Num;
 public class NumberOfBarsCriterion extends AbstractAnalysisCriterion {
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         return tradingRecord.getTrades().stream().filter(Trade::isClosed).map(t -> calculate(series, t))
                 .reduce(series.numOf(0), Num::plus);
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         if (trade.isClosed()) {
             final int exitIndex = trade.getExit().getIndex();
             final int entryIndex = trade.getEntry().getIndex();
@@ -52,7 +52,7 @@ public class NumberOfBarsCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isLessThan(criterionValue2);
     }
 }

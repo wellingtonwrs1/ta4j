@@ -101,7 +101,7 @@ public class TrailingStopLossRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
         if (tradingRecord != null) {
@@ -121,7 +121,7 @@ public class TrailingStopLossRule extends AbstractRule {
         return satisfied;
     }
 
-    private boolean isBuySatisfied(Num currentPrice, int index, int tradeIndex) {
+    private synchronized boolean isBuySatisfied(Num currentPrice, int index, int tradeIndex) {
         HighestValueIndicator highest = new HighestValueIndicator(priceIndicator,
                 getValueIndicatorBarCount(index, tradeIndex));
         Num highestCloseNum = highest.getValue(index);
@@ -130,11 +130,11 @@ public class TrailingStopLossRule extends AbstractRule {
         return currentPrice.isLessThanOrEqual(currentStopLossLimitActivation);
     }
 
-    public Num getCurrentStopLossLimitActivation() {
+    public synchronized Num getCurrentStopLossLimitActivation() {
         return currentStopLossLimitActivation;
     }
 
-    private boolean isSellSatisfied(Num currentPrice, int index, int tradeIndex) {
+    private synchronized boolean isSellSatisfied(Num currentPrice, int index, int tradeIndex) {
         LowestValueIndicator lowest = new LowestValueIndicator(priceIndicator,
                 getValueIndicatorBarCount(index, tradeIndex));
         Num lowestCloseNum = lowest.getValue(index);
@@ -143,7 +143,7 @@ public class TrailingStopLossRule extends AbstractRule {
         return currentPrice.isGreaterThanOrEqual(currentStopLossLimitActivation);
     }
 
-    private int getValueIndicatorBarCount(int index, int tradeIndex) {
+    private synchronized int getValueIndicatorBarCount(int index, int tradeIndex) {
         return Math.min(index - tradeIndex + 1, this.barCount);
     }
 

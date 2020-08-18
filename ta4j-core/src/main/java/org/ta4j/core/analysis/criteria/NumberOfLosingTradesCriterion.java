@@ -34,7 +34,7 @@ import org.ta4j.core.num.Num;
 public class NumberOfLosingTradesCriterion extends AbstractAnalysisCriterion {
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         long numberOfLosingTrades = tradingRecord.getTrades().stream().filter(Trade::isClosed)
                 .filter(trade -> isLosingTrade(series, trade)).count();
         return series.numOf(numberOfLosingTrades);
@@ -52,12 +52,12 @@ public class NumberOfLosingTradesCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         return isLosingTrade(series, trade) ? series.numOf(1) : series.numOf(0);
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isLessThan(criterionValue2);
     }
 }

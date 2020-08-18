@@ -68,7 +68,7 @@ public class ThreeWhiteSoldiersIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
         if (index < 3) {
             // We need 4 candles: 1 black, 3 white
             return false;
@@ -82,7 +82,7 @@ public class ThreeWhiteSoldiersIndicator extends CachedIndicator<Boolean> {
      * @param index the bar/candle index
      * @return true if the bar/candle has a very short upper shadow, false otherwise
      */
-    private boolean hasVeryShortUpperShadow(int index) {
+    private synchronized boolean hasVeryShortUpperShadow(int index) {
         Num currentUpperShadow = upperShadowInd.getValue(index);
         // We use the black candle index to remove to bias of the previous soldiers
         Num averageUpperShadow = averageUpperShadowInd.getValue(blackCandleIndex);
@@ -94,7 +94,7 @@ public class ThreeWhiteSoldiersIndicator extends CachedIndicator<Boolean> {
      * @param index the current bar/candle index
      * @return true if the current bar/candle is growing, false otherwise
      */
-    private boolean isGrowing(int index) {
+    private synchronized boolean isGrowing(int index) {
         Bar prevBar = getBarSeries().getBar(index - 1);
         Bar currBar = getBarSeries().getBar(index);
         final Num prevOpenPrice = prevBar.getOpenPrice();
@@ -112,7 +112,7 @@ public class ThreeWhiteSoldiersIndicator extends CachedIndicator<Boolean> {
      * @param index the current bar/candle index
      * @return true if the current bar/candle is a white soldier, false otherwise
      */
-    private boolean isWhiteSoldier(int index) {
+    private synchronized boolean isWhiteSoldier(int index) {
         Bar prevBar = getBarSeries().getBar(index - 1);
         Bar currBar = getBarSeries().getBar(index);
         if (currBar.isBullish()) {

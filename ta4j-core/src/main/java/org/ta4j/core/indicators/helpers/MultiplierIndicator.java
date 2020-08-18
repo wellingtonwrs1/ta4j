@@ -42,7 +42,7 @@ public class MultiplierIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return indicator.getValue(index).multipliedBy(coefficient);
     }
 

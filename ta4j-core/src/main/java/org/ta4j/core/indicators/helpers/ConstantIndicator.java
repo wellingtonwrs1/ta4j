@@ -40,7 +40,7 @@ public class ConstantIndicator<T> extends AbstractIndicator<T> {
     }
 
     @Override
-    public T getValue(int index) {
+    public synchronized T getValue(int index) {
         return value;
     }
 

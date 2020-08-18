@@ -67,7 +67,7 @@ public class MACDIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return shortTermEma.getValue(index).minus(longTermEma.getValue(index));
     }
 }

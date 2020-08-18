@@ -218,7 +218,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
 
         if (minStrength != null && minStrength.isZero()) {
             return false;
@@ -265,7 +265,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if strict positive convergent
      */
-    private Boolean calculatePositiveConvergenceStrict(int index) {
+    private synchronized Boolean calculatePositiveConvergenceStrict(int index) {
         Rule refIsRising = new IsRisingRule(ref, barCount);
         Rule otherIsRising = new IsRisingRule(ref, barCount);
 
@@ -276,7 +276,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if strict negative convergent
      */
-    private Boolean calculateNegativeConvergenceStrict(int index) {
+    private synchronized Boolean calculateNegativeConvergenceStrict(int index) {
         Rule refIsFalling = new IsFallingRule(ref, barCount);
         Rule otherIsFalling = new IsFallingRule(ref, barCount);
 
@@ -287,7 +287,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if positive divergent
      */
-    private Boolean calculatePositiveDivergenceStrict(int index) {
+    private synchronized Boolean calculatePositiveDivergenceStrict(int index) {
         Rule refIsRising = new IsRisingRule(ref, barCount);
         Rule otherIsFalling = new IsFallingRule(ref, barCount);
 
@@ -298,7 +298,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if negative divergent
      */
-    private Boolean calculateNegativeDivergenceStrict(int index) {
+    private synchronized Boolean calculateNegativeDivergenceStrict(int index) {
         Rule refIsFalling = new IsFallingRule(ref, barCount);
         Rule otherIsRising = new IsRisingRule(ref, barCount);
 
@@ -309,7 +309,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if positive convergent
      */
-    private Boolean calculatePositiveConvergence(int index) {
+    private synchronized Boolean calculatePositiveConvergence(int index) {
         CorrelationCoefficientIndicator cc = new CorrelationCoefficientIndicator(ref, other, barCount);
         boolean isConvergent = cc.getValue(index).isGreaterThanOrEqual(minStrength);
 
@@ -323,7 +323,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if negative convergent
      */
-    private Boolean calculateNegativeConvergence(int index) {
+    private synchronized Boolean calculateNegativeConvergence(int index) {
         CorrelationCoefficientIndicator cc = new CorrelationCoefficientIndicator(ref, other, barCount);
         boolean isConvergent = cc.getValue(index).isGreaterThanOrEqual(minStrength);
 
@@ -337,7 +337,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if positive divergent
      */
-    private Boolean calculatePositiveDivergence(int index) {
+    private synchronized Boolean calculatePositiveDivergence(int index) {
 
         CorrelationCoefficientIndicator cc = new CorrelationCoefficientIndicator(ref, other, barCount);
         boolean isDivergent = cc.getValue(index).isLessThanOrEqual(minStrength.multipliedBy(numOf(-1)));
@@ -355,7 +355,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return true, if negative divergent
      */
-    private Boolean calculateNegativeDivergence(int index) {
+    private synchronized Boolean calculateNegativeDivergence(int index) {
 
         CorrelationCoefficientIndicator cc = new CorrelationCoefficientIndicator(ref, other, barCount);
         boolean isDivergent = cc.getValue(index).isLessThanOrEqual(minStrength.multipliedBy(numOf(-1)));
@@ -373,7 +373,7 @@ public class ConvergenceDivergenceIndicator extends CachedIndicator<Boolean> {
      * @param index the actual index
      * @return the relative slope
      */
-    private Num calculateSlopeRel(int index) {
+    private synchronized Num calculateSlopeRel(int index) {
         SimpleLinearRegressionIndicator slrRef = new SimpleLinearRegressionIndicator(ref, barCount);
         int firstIndex = Math.max(0, index - barCount + 1);
         return (slrRef.getValue(index).minus(slrRef.getValue(firstIndex))).dividedBy(slrRef.getValue(index));

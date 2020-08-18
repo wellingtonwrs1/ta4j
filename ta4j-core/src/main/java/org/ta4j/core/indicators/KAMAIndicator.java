@@ -73,7 +73,7 @@ public class KAMAIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num currentPrice = price.getValue(index);
         if (index < barCountEffectiveRatio) {
             return currentPrice;

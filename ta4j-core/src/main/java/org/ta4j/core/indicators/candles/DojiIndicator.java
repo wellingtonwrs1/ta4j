@@ -69,7 +69,7 @@ public class DojiIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
         if (index < 1) {
             return bodyHeightInd.getValue(index).isZero();
         }

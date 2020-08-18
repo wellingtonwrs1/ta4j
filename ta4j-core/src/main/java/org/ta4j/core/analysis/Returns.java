@@ -123,17 +123,17 @@ public class Returns implements Indicator<Num> {
      * @return the return rate value at the index-th position
      */
     @Override
-    public Num getValue(int index) {
+    public synchronized Num getValue(int index) {
         return values.get(index);
     }
 
     @Override
-    public BarSeries getBarSeries() {
+    public synchronized BarSeries getBarSeries() {
         return barSeries;
     }
 
     @Override
-    public Num numOf(Number number) {
+    public synchronized Num numOf(Number number) {
         return barSeries.numOf(number);
     }
 

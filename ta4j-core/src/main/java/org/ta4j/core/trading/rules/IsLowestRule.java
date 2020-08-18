@@ -57,7 +57,7 @@ public class IsLowestRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         LowestValueIndicator lowest = new LowestValueIndicator(ref, barCount);
         Num lowestVal = lowest.getValue(index);
         Num refVal = ref.getValue(index);

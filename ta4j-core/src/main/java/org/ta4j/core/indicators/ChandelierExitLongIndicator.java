@@ -65,7 +65,7 @@ public class ChandelierExitLongIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return high.getValue(index).minus(atr.getValue(index).multipliedBy(k));
     }
 }

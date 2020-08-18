@@ -76,7 +76,7 @@ public class DPOIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return price.getValue(index).minus(sma.getValue(index - timeShift));
     }
 

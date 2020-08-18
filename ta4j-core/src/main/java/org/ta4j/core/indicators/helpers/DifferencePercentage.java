@@ -61,7 +61,7 @@ public class DifferencePercentage extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num value = indicator.getValue((index));
         if (lastNotification == null) {
             lastNotification = value;

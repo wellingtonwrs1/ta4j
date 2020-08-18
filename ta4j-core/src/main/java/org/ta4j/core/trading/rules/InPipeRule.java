@@ -80,7 +80,7 @@ public class InPipeRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         final boolean satisfied = ref.getValue(index).isLessThanOrEqual(upper.getValue(index))
                 && ref.getValue(index).isGreaterThanOrEqual(lower.getValue(index));
         traceIsSatisfied(index, satisfied);

@@ -58,7 +58,7 @@ public class CMOIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num sumOfGains = numOf(0);
         for (int i = Math.max(1, index - barCount + 1); i <= index; i++) {
             sumOfGains = sumOfGains.plus(gainIndicator.getValue(i));

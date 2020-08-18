@@ -94,7 +94,7 @@ public class ParabolicSarIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num sar = NaN;
         if (index == getBarSeries().getBeginIndex()) {
             return sar; // no trend detection possible for the first value
@@ -158,7 +158,7 @@ public class ParabolicSarIndicator extends RecursiveCachedIndicator<Num> {
     /**
      * Increments the acceleration factor.
      */
-    private void incrementAcceleration() {
+    private synchronized void incrementAcceleration() {
         if (accelerationFactor.isGreaterThanOrEqual(maxAcceleration)) {
             accelerationFactor = maxAcceleration;
         } else {

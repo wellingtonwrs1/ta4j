@@ -103,7 +103,7 @@ public class InSlopeRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         DifferenceIndicator diff = new DifferenceIndicator(ref, prev);
         Num val = diff.getValue(index);
         boolean minSlopeSatisfied = minSlope.isNaN() || val.isGreaterThanOrEqual(minSlope);

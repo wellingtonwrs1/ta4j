@@ -43,7 +43,7 @@ public class LowestValueIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         if (indicator.getValue(index).isNaN() && barCount != 1) {
             return new LowestValueIndicator(indicator, barCount - 1).getValue(index - 1);
         }

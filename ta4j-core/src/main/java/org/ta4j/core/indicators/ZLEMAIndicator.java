@@ -49,7 +49,7 @@ public class ZLEMAIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         if (index + 1 < barCount) {
             // Starting point of the ZLEMA
             return new SMAIndicator(indicator, barCount).getValue(index);

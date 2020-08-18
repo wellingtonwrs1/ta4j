@@ -52,7 +52,7 @@ public class HMAIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return sqrtWma.getValue(index);
     }
 

@@ -51,7 +51,7 @@ public abstract class AbstractIndicator<T> implements Indicator<T> {
     }
 
     @Override
-    public BarSeries getBarSeries() {
+    public synchronized BarSeries getBarSeries() {
         return series;
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractIndicator<T> implements Indicator<T> {
     }
 
     @Override
-    public Num numOf(Number number) {
+    public synchronized Num numOf(Number number) {
         return series.numOf(number);
     }
 

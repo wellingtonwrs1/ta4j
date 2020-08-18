@@ -211,7 +211,7 @@ public class BaseBarSeries implements BarSeries {
      * @return a new list of bars with tick from startIndex (inclusive) to endIndex
      *         (exclusive)
      */
-    private static List<Bar> cut(List<Bar> bars, final int startIndex, final int endIndex) {
+    private static synchronized List<Bar> cut(List<Bar> bars, final int startIndex, final int endIndex) {
         return new ArrayList<>(bars.subList(startIndex, endIndex));
     }
 
@@ -243,7 +243,7 @@ public class BaseBarSeries implements BarSeries {
      * @throws IllegalArgumentException if endIndex <= startIndex or startIndex < 0
      */
     @Override
-    public BaseBarSeries getSubSeries(int startIndex, int endIndex) {
+    public synchronized BaseBarSeries getSubSeries(int startIndex, int endIndex) {
         if (startIndex < 0) {
             throw new IllegalArgumentException(String.format("the startIndex: %s must not be negative", startIndex));
         }
@@ -261,12 +261,12 @@ public class BaseBarSeries implements BarSeries {
     }
 
     @Override
-    public Num numOf(Number number) {
+    public synchronized Num numOf(Number number) {
         return this.numFunction.apply(number);
     }
 
     @Override
-    public Function<Number, Num> function() {
+    public synchronized Function<Number, Num> function() {
         return numFunction;
     }
 
@@ -277,7 +277,7 @@ public class BaseBarSeries implements BarSeries {
      * @param bars a List of Bar objects.
      * @return false if a Num implementation of at least one Bar does not fit.
      */
-    private boolean checkBars(List<Bar> bars) {
+    private synchronized boolean checkBars(List<Bar> bars) {
         for (Bar bar : bars) {
             if (!checkBar(bar)) {
                 return false;
@@ -296,7 +296,7 @@ public class BaseBarSeries implements BarSeries {
      * @see Bar
      * @see #addBar(Duration, ZonedDateTime)
      */
-    private boolean checkBar(Bar bar) {
+    private synchronized boolean checkBar(Bar bar) {
         if (bar.getClosePrice() == null) {
             return true; // bar has not been initialized with data (uses deprecated constructor)
         }
@@ -333,7 +333,7 @@ public class BaseBarSeries implements BarSeries {
     }
 
     @Override
-    public int getBarCount() {
+    public synchronized int getBarCount() {
         if (seriesEndIndex < 0) {
             return 0;
         }
@@ -342,27 +342,27 @@ public class BaseBarSeries implements BarSeries {
     }
 
     @Override
-    public List<Bar> getBarData() {
+    public synchronized List<Bar> getBarData() {
         return bars;
     }
 
     @Override
-    public int getBeginIndex() {
+    public synchronized int getBeginIndex() {
         return seriesBeginIndex;
     }
 
     @Override
-    public int getEndIndex() {
+    public synchronized int getEndIndex() {
         return seriesEndIndex;
     }
 
     @Override
-    public int getMaximumBarCount() {
+    public synchronized int getMaximumBarCount() {
         return maximumBarCount;
     }
 
     @Override
-    public void setMaximumBarCount(int maximumBarCount) {
+    public synchronized void setMaximumBarCount(int maximumBarCount) {
         if (constrained) {
             throw new IllegalStateException("Cannot set a maximum bar count on a constrained bar series");
         }
@@ -374,7 +374,7 @@ public class BaseBarSeries implements BarSeries {
     }
 
     @Override
-    public int getRemovedBarsCount() {
+    public synchronized int getRemovedBarsCount() {
         return removedBarsCount;
     }
 
@@ -427,59 +427,59 @@ public class BaseBarSeries implements BarSeries {
     }
 
     @Override
-    public void addBar(Duration timePeriod, ZonedDateTime endTime) {
+    public synchronized void addBar(Duration timePeriod, ZonedDateTime endTime) {
         this.addBar(new BaseBar(timePeriod, endTime, function()));
     }
 
     @Override
-    public void addBar(ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume) {
+    public synchronized void addBar(ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume) {
         this.addBar(
                 new BaseBar(Duration.ofDays(1), endTime, openPrice, highPrice, lowPrice, closePrice, volume, numOf(0)));
     }
 
     @Override
-    public void addBar(ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume,
+    public synchronized void addBar(ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice, Num closePrice, Num volume,
             Num amount) {
         this.addBar(
                 new BaseBar(Duration.ofDays(1), endTime, openPrice, highPrice, lowPrice, closePrice, volume, amount));
     }
 
     @Override
-    public void addBar(Duration timePeriod, ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice,
+    public synchronized void addBar(Duration timePeriod, ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice,
             Num closePrice, Num volume) {
         this.addBar(new BaseBar(timePeriod, endTime, openPrice, highPrice, lowPrice, closePrice, volume, numOf(0)));
     }
 
     @Override
-    public void addBar(Duration timePeriod, ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice,
+    public synchronized void addBar(Duration timePeriod, ZonedDateTime endTime, Num openPrice, Num highPrice, Num lowPrice,
             Num closePrice, Num volume, Num amount) {
         this.addBar(new BaseBar(timePeriod, endTime, openPrice, highPrice, lowPrice, closePrice, volume, amount));
     }
 
     @Override
-    public void addTrade(Number price, Number amount) {
+    public synchronized void addTrade(Number price, Number amount) {
         addTrade(numOf(price), numOf(amount));
     }
 
     @Override
-    public void addTrade(String price, String amount) {
+    public synchronized void addTrade(String price, String amount) {
         addTrade(numOf(new BigDecimal(price)), numOf(new BigDecimal(amount)));
     }
 
     @Override
-    public void addTrade(Num tradeVolume, Num tradePrice) {
+    public synchronized void addTrade(Num tradeVolume, Num tradePrice) {
         getLastBar().addTrade(tradeVolume, tradePrice);
     }
 
     @Override
-    public void addPrice(Num price) {
+    public synchronized void addPrice(Num price) {
         getLastBar().addPrice(price);
     }
 
     /**
      * Removes the N first bars which exceed the maximum bar count.
      */
-    private void removeExceedingBars() {
+    private synchronized void removeExceedingBars() {
         int barCount = bars.size();
         if (barCount > maximumBarCount) {
             // Removing old bars

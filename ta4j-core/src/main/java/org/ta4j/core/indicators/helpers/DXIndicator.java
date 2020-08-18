@@ -46,7 +46,7 @@ public class DXIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num pdiValue = plusDIIndicator.getValue(index);
         Num mdiValue = minusDIIndicator.getValue(index);
         if (pdiValue.plus(mdiValue).equals(numOf(0))) {

@@ -60,7 +60,7 @@ public class IchimokuLineIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return periodHigh.getValue(index).plus(periodLow.getValue(index)).dividedBy(numOf(2));
     }
 }

@@ -47,7 +47,7 @@ public class AroonOscillatorIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return aroonUpIndicator.getValue(index).minus(aroonDownIndicator.getValue(index));
     }
 

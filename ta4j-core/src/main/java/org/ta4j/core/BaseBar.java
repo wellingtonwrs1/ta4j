@@ -381,7 +381,7 @@ public class BaseBar implements Bar {
      * @param tradeVolume the traded volume
      * @param tradePrice  the price
      */
-    public void addTrade(Num tradeVolume, Num tradePrice) {
+    public synchronized void addTrade(Num tradeVolume, Num tradePrice) {
         addPrice(tradePrice);
 
         volume = volume.plus(tradeVolume);
@@ -390,7 +390,7 @@ public class BaseBar implements Bar {
     }
 
     @Override
-    public void addPrice(Num price) {
+    public synchronized void addPrice(Num price) {
         if (openPrice == null) {
             openPrice = price;
         }

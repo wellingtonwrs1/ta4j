@@ -148,26 +148,26 @@ public class BaseStrategy implements Strategy {
     }
 
     @Override
-    public boolean isUnstableAt(int index) {
+    public synchronized boolean isUnstableAt(int index) {
         return index < unstablePeriod;
     }
 
     @Override
-    public boolean shouldEnter(int index, TradingRecord tradingRecord) {
+    public synchronized boolean shouldEnter(int index, TradingRecord tradingRecord) {
         boolean enter = Strategy.super.shouldEnter(index, tradingRecord);
         traceShouldEnter(index, enter);
         return enter;
     }
 
     @Override
-    public boolean shouldExit(int index, TradingRecord tradingRecord) {
+    public synchronized boolean shouldExit(int index, TradingRecord tradingRecord) {
         boolean exit = Strategy.super.shouldExit(index, tradingRecord);
         traceShouldExit(index, exit);
         return exit;
     }
 
     @Override
-    public boolean shouldClose(int index, TradingRecord tradingRecord) {
+    public synchronized boolean shouldClose(int index, TradingRecord tradingRecord) {
         boolean close = Strategy.super.shouldClose(index, tradingRecord);
         traceShouldClose(index, close);
         return close;

@@ -66,7 +66,7 @@ public class CoppockCurveIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return wma.getValue(index);
     }
 }

@@ -156,12 +156,12 @@ public class BaseTradingRecord implements TradingRecord {
     }
 
     @Override
-    public void operate(int index, Num price, Num amount) {
+    public synchronized void operate(int index, Num price, Num amount) {
         this.operate(index, price, amount, null);
     }
 
     @Override
-    public void operate(int index, Num price, Num amount, ZonedDateTime startTime) {
+    public synchronized void operate(int index, Num price, Num amount, ZonedDateTime startTime) {
         if (currentTrade.isClosed()) {
             // Current trade closed, should not occur
             throw new IllegalStateException("Current trade should not be closed");
@@ -172,7 +172,7 @@ public class BaseTradingRecord implements TradingRecord {
     }
 
     @Override
-    public boolean enter(int index, Num price, Num amount) {
+    public synchronized boolean enter(int index, Num price, Num amount) {
         if (currentTrade.isNew()) {
             operate(index, price, amount);
             return true;
@@ -181,7 +181,7 @@ public class BaseTradingRecord implements TradingRecord {
     }
 
     @Override
-    public boolean exit(int index, Num price, Num amount) {
+    public synchronized boolean exit(int index, Num price, Num amount) {
         if (currentTrade.isOpened()) {
             operate(index, price, amount);
             return true;
@@ -234,7 +234,7 @@ public class BaseTradingRecord implements TradingRecord {
      * @param order   the order to be recorded
      * @param isEntry true if the order is an entry, false otherwise (exit)
      */
-    private void recordOrder(Order order, boolean isEntry) {
+    private synchronized void recordOrder(Order order, boolean isEntry) {
         if (order == null) {
             throw new IllegalArgumentException("Order should not be null");
         }

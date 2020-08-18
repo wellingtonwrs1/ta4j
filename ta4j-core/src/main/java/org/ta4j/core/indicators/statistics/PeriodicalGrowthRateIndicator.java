@@ -85,7 +85,7 @@ public class PeriodicalGrowthRateIndicator extends CachedIndicator<Num> {
      * @return the total return from the calculated results of the method
      *         'calculate'
      */
-    public Num getTotalReturn() {
+    public synchronized Num getTotalReturn() {
 
         Num totalProduct = one;
         int completeTimeFrames = (getBarSeries().getBarCount() / barCount);
@@ -105,7 +105,7 @@ public class PeriodicalGrowthRateIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
 
         Num currentValue = indicator.getValue(index);
 

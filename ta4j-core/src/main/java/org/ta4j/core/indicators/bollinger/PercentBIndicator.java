@@ -61,7 +61,7 @@ public class PercentBIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num value = indicator.getValue(index);
         Num upValue = bbu.getValue(index);
         Num lowValue = bbl.getValue(index);

@@ -93,7 +93,7 @@ public class StopLossRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
         if (tradingRecord != null) {
@@ -114,15 +114,16 @@ public class StopLossRule extends AbstractRule {
         return satisfied;
     }
 
-    private boolean isSellStopSatisfied(Num entryPrice, Num currentPrice) {
+    private synchronized boolean isSellStopSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
             return calculatePips(entryPrice, currentPrice, true);
+        } else {
+            Num lossRatioThreshold = HUNDRED.plus(lossValue).dividedBy(HUNDRED);
+            Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
+            boolean isSatisfied = currentPrice.isGreaterThanOrEqual(threshold);
+            this.traceLog("SELL", entryPrice, currentPrice, lossRatioThreshold, threshold, isSatisfied);
+            return isSatisfied;
         }
-        Num lossRatioThreshold = HUNDRED.plus(lossValue).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        boolean isSatisfied = currentPrice.isGreaterThanOrEqual(threshold);
-        this.traceLog("SELL", entryPrice, currentPrice, lossRatioThreshold, threshold, isSatisfied);
-        return isSatisfied;
     }
 
     private void traceLog(String type, Num entryPrice, Num currentPrice, Num lossRatioThreshold, Num threshold, boolean isSatisfied) {
@@ -132,28 +133,30 @@ public class StopLossRule extends AbstractRule {
         }
     }
 
-    private boolean isBuyStopSatisfied(Num entryPrice, Num currentPrice) {
+    private synchronized boolean isBuyStopSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
             return calculatePips(entryPrice, currentPrice, false);
+        } else {
+            Num lossRatioThreshold = HUNDRED.minus(lossValue).dividedBy(HUNDRED);
+            Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
+            boolean isSatisfied = currentPrice.isLessThanOrEqual(threshold);
+            this.traceLog("BUY", entryPrice, currentPrice, lossRatioThreshold, threshold, isSatisfied);
+            return isSatisfied;
         }
-        Num lossRatioThreshold = HUNDRED.minus(lossValue).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        boolean isSatisfied = currentPrice.isLessThanOrEqual(threshold);
-        this.traceLog("BUY", entryPrice, currentPrice, lossRatioThreshold, threshold, isSatisfied);
-        return isSatisfied;
     }
 
-    private boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {
+    private synchronized boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {
         BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
         BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
         int position = pipPosition > 0 ? pipPosition : entry.scale();
         if (isSell) {
             return current.subtract(entry).movePointRight(position).compareTo((BigDecimal) lossValue.getDelegate()) >= 0;
+        } else {
+            return entry.subtract(current).movePointRight(position).compareTo((BigDecimal) lossValue.getDelegate()) >= 0;
         }
-        return entry.subtract(current).movePointRight(position).compareTo((BigDecimal) lossValue.getDelegate()) >= 0;
     }
 
-    public void setLossValue(Num lossValue) {
+    public synchronized void setLossValue(Num lossValue) {
         this.lossValue = lossValue;
     }
 }

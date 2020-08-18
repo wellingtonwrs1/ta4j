@@ -55,7 +55,7 @@ public class ExitWhenProfitableRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
         if (tradingRecord != null && expirationTime > 0) {
@@ -74,15 +74,15 @@ public class ExitWhenProfitableRule extends AbstractRule {
         return satisfied;
     }
 
-    private boolean isExpirationTimeSatisfied(ZonedDateTime startTime) {
+    private synchronized boolean isExpirationTimeSatisfied(ZonedDateTime startTime) {
         return startTime == null || startTime.plusMinutes(expirationTime).compareTo(ZonedDateTime.now()) <= 0;
     }
 
-    private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
+    private synchronized boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
         return currentPrice.isGreaterThanOrEqual(entryPrice);
     }
 
-    private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
+    private synchronized boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
         return currentPrice.isLessThanOrEqual(entryPrice);
     }
 

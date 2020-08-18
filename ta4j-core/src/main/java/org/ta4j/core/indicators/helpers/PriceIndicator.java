@@ -43,7 +43,7 @@ public abstract class PriceIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         final Bar bar = getBarSeries().getBar(index);
         return priceFunction.apply(bar);
     }

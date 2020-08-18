@@ -73,7 +73,7 @@ public class ChopIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    public Num calculate(int index) {
+    public synchronized Num calculate(int index) {
         Num summ = atrIndicator.getValue(index);
         for (int i = 1; i < timeFrame; ++i) {
             summ = summ.plus(atrIndicator.getValue(index - i));

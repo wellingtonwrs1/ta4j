@@ -76,7 +76,7 @@ public class SimpleLinearRegressionIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         final int startIndex = Math.max(0, index - barCount + 1);
         if (index - startIndex + 1 < 2) {
             // Not enough observations to compute a regression line
@@ -101,7 +101,7 @@ public class SimpleLinearRegressionIndicator extends CachedIndicator<Num> {
      * @param startIndex the start index (inclusive) in the bar series
      * @param endIndex   the end index (inclusive) in the bar series
      */
-    private void calculateRegressionLine(int startIndex, int endIndex) {
+    private synchronized void calculateRegressionLine(int startIndex, int endIndex) {
         // First pass: compute xBar and yBar
         Num sumX = numOf(0);
         Num sumY = numOf(0);

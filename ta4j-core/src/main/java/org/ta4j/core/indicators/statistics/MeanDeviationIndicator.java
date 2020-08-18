@@ -55,7 +55,7 @@ public class MeanDeviationIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num absoluteDeviations = numOf(0);
 
         final Num average = sma.getValue(index);

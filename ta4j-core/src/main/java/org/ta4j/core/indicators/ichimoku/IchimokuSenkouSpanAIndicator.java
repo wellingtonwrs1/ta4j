@@ -85,7 +85,7 @@ public class IchimokuSenkouSpanAIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
     	
     	// at index=7 we need index=3 when offset=5
     	int spanIndex = index - offset + 1;

@@ -174,7 +174,7 @@ public class Trade implements Serializable {
      * @param index the bar index
      * @return the order
      */
-    public Order operate(int index) {
+    public synchronized Order operate(int index) {
         return operate(index, NaN, NaN);
     }
 
@@ -186,7 +186,7 @@ public class Trade implements Serializable {
      * @param amount the amount
      * @return the order
      */
-    public Order operate(int index, Num price, Num amount) {
+    public synchronized Order operate(int index, Num price, Num amount) {
         return this.operate(index, price, amount, null);
     }
 
@@ -199,7 +199,7 @@ public class Trade implements Serializable {
      * @param startTime the startTime
      * @return the order
      */
-    public Order operate(int index, Num price, Num amount, ZonedDateTime startTime) {
+    public synchronized Order operate(int index, Num price, Num amount, ZonedDateTime startTime) {
         Order order = null;
         if (isNew()) {
             order = new Order(index, startingType, price, amount, startTime, transactionCostModel);

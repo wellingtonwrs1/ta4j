@@ -35,15 +35,15 @@ public class ZeroCostModel implements CostModel {
     public ZeroCostModel() {
     }
 
-    public Num calculate(Trade trade) {
+    public synchronized Num calculate(Trade trade) {
         return calculate(trade, 0);
     }
 
-    public Num calculate(Trade trade, int currentIndex) {
+    public synchronized Num calculate(Trade trade, int currentIndex) {
         return trade.getEntry().getPricePerAsset().numOf(0);
     }
 
-    public Num calculate(Num price, Num amount) {
+    public synchronized Num calculate(Num price, Num amount) {
         return price.numOf(0);
     }
 
@@ -52,7 +52,7 @@ public class ZeroCostModel implements CostModel {
      * 
      * @param otherModel model to compare with
      */
-    public boolean equals(CostModel otherModel) {
+    public synchronized boolean equals(CostModel otherModel) {
         boolean equality = false;
         if (this.getClass().equals(otherModel.getClass())) {
             equality = true;

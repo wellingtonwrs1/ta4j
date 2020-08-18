@@ -47,7 +47,7 @@ public class NVIIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         if (index == 0) {
             return numOf(1000);
         }

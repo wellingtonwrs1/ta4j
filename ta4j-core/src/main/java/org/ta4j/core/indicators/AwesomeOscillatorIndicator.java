@@ -71,7 +71,7 @@ public class AwesomeOscillatorIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return sma5.getValue(index).minus(sma34.getValue(index));
     }
 }

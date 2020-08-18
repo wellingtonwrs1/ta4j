@@ -38,13 +38,13 @@ import org.ta4j.core.num.Num;
 public class MaximumDrawdownCriterion extends AbstractAnalysisCriterion {
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         CashFlow cashFlow = new CashFlow(series, tradingRecord);
         return calculateMaximumDrawdown(series, cashFlow);
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         if (trade != null && trade.getEntry() != null && trade.getExit() != null) {
             CashFlow cashFlow = new CashFlow(series, trade);
             return calculateMaximumDrawdown(series, cashFlow);
@@ -53,7 +53,7 @@ public class MaximumDrawdownCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isLessThan(criterionValue2);
     }
 
@@ -64,7 +64,7 @@ public class MaximumDrawdownCriterion extends AbstractAnalysisCriterion {
      * @param cashFlow the cash flow
      * @return the maximum drawdown from a cash flow over a series
      */
-    private Num calculateMaximumDrawdown(BarSeries series, CashFlow cashFlow) {
+    private synchronized Num calculateMaximumDrawdown(BarSeries series, CashFlow cashFlow) {
         Num maximumDrawdown = series.numOf(0);
         Num maxPeak = series.numOf(0);
         if (!series.isEmpty()) {

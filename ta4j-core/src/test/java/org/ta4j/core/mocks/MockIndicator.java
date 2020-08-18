@@ -52,7 +52,7 @@ public class MockIndicator implements Indicator<Num> {
      * @param index Indicator value to get
      * @return Num Indicator value at index
      */
-    public Num getValue(int index) {
+    public synchronized Num getValue(int index) {
         return values.get(index);
     }
 
@@ -61,12 +61,12 @@ public class MockIndicator implements Indicator<Num> {
      * 
      * @return TimeSeries of the Indicator
      */
-    public BarSeries getBarSeries() {
+    public synchronized BarSeries getBarSeries() {
         return series;
     }
 
     @Override
-    public Num numOf(Number number) {
+    public synchronized Num numOf(Number number) {
         return series.numOf(number);
     }
 

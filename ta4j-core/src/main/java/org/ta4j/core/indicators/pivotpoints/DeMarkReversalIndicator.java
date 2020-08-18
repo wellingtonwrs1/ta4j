@@ -66,7 +66,7 @@ public class DeMarkReversalIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num x = pivotPointIndicator.getValue(index).multipliedBy(numOf(4));
         Num result;
 
@@ -80,7 +80,7 @@ public class DeMarkReversalIndicator extends RecursiveCachedIndicator<Num> {
 
     }
 
-    private Num calculateResistance(Num x, int index) {
+    private synchronized Num calculateResistance(Num x, int index) {
         List<Integer> barsOfPreviousPeriod = pivotPointIndicator.getBarsOfPreviousPeriod(index);
         if (barsOfPreviousPeriod.isEmpty()) {
             return NaN;
@@ -94,7 +94,7 @@ public class DeMarkReversalIndicator extends RecursiveCachedIndicator<Num> {
         return x.dividedBy(two).minus(low);
     }
 
-    private Num calculateSupport(Num x, int index) {
+    private synchronized Num calculateSupport(Num x, int index) {
         List<Integer> barsOfPreviousPeriod = pivotPointIndicator.getBarsOfPreviousPeriod(index);
         if (barsOfPreviousPeriod.isEmpty()) {
             return NaN;

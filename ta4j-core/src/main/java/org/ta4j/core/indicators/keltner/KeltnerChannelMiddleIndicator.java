@@ -51,7 +51,7 @@ public class KeltnerChannelMiddleIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return emaIndicator.getValue(index);
     }
 

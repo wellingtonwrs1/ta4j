@@ -59,7 +59,7 @@ public class PearsonCorrelationIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
 
         Num n = numOf(barCount);
 

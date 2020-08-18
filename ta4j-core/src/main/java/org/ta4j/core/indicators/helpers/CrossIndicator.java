@@ -53,7 +53,7 @@ public class CrossIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
 
         int i = index;
         if (i == 0 || up.getValue(i).isGreaterThanOrEqual(low.getValue(i))) {

@@ -55,7 +55,7 @@ public class ROCIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         int nIndex = Math.max(index - barCount, 0);
         Num nPeriodsAgoValue = indicator.getValue(nIndex);
         Num currentValue = indicator.getValue(index);

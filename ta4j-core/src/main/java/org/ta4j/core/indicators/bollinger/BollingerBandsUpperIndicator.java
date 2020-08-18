@@ -71,14 +71,14 @@ public class BollingerBandsUpperIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return bbm.getValue(index).plus(deviation.getValue(index).multipliedBy(k));
     }
 
     /**
      * @return the K multiplier
      */
-    public Num getK() {
+    public synchronized Num getK() {
         return k;
     }
 

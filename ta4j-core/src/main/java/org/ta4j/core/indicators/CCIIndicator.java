@@ -59,7 +59,7 @@ public class CCIIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         final Num typicalPrice = typicalPriceInd.getValue(index);
         final Num typicalPriceAvg = smaInd.getValue(index);
         final Num meanDeviation = meanDeviationInd.getValue(index);

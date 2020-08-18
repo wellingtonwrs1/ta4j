@@ -46,7 +46,7 @@ public class DateTimeIndicator extends CachedIndicator<ZonedDateTime> {
     }
 
     @Override
-    protected ZonedDateTime calculate(int index) {
+    protected synchronized ZonedDateTime calculate(int index) {
     	Bar bar = getBarSeries().getBar(index);
     	return this.action.apply(bar);
     }

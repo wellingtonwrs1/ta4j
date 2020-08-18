@@ -270,7 +270,7 @@ public class Order implements Serializable {
      * @param amount               amount of assets ordered
      * @param transactionCostModel the cost model for order execution
      */
-    private void setPricesAndCost(Num pricePerAsset, Num amount, CostModel transactionCostModel) {
+    private synchronized void setPricesAndCost(Num pricePerAsset, Num amount, CostModel transactionCostModel) {
         this.costModel = transactionCostModel;
         this.pricePerAsset = pricePerAsset;
         this.cost = transactionCostModel.calculate(this.pricePerAsset, amount);
@@ -324,7 +324,7 @@ public class Order implements Serializable {
      * @param series the bar series
      * @return a BUY order
      */
-    public static Order buyAt(int index, BarSeries series) {
+    public static synchronized Order buyAt(int index, BarSeries series) {
         return new Order(index, series, OrderType.BUY);
     }
 
@@ -335,7 +335,7 @@ public class Order implements Serializable {
      * @param transactionCostModel the cost model for order execution
      * @return a BUY order
      */
-    public static Order buyAt(int index, Num price, Num amount, CostModel transactionCostModel) {
+    public static synchronized Order buyAt(int index, Num price, Num amount, CostModel transactionCostModel) {
         return new Order(index, OrderType.BUY, price, amount, transactionCostModel);
     }
 
@@ -345,7 +345,7 @@ public class Order implements Serializable {
      * @param amount the amount to be (or that was) bought
      * @return a BUY order
      */
-    public static Order buyAt(int index, Num price, Num amount) {
+    public static synchronized Order buyAt(int index, Num price, Num amount) {
         return new Order(index, OrderType.BUY, price, amount);
     }
 
@@ -355,7 +355,7 @@ public class Order implements Serializable {
      * @param amount the amount to be (or that was) bought
      * @return a BUY order
      */
-    public static Order buyAt(int index, BarSeries series, Num amount) {
+    public static synchronized Order buyAt(int index, BarSeries series, Num amount) {
         return new Order(index, series, OrderType.BUY, amount);
     }
 
@@ -366,7 +366,7 @@ public class Order implements Serializable {
      * @param transactionCostModel the cost model for order execution
      * @return a BUY order
      */
-    public static Order buyAt(int index, BarSeries series, Num amount, CostModel transactionCostModel) {
+    public static synchronized Order buyAt(int index, BarSeries series, Num amount, CostModel transactionCostModel) {
         return new Order(index, series, OrderType.BUY, amount, transactionCostModel);
     }
 
@@ -375,7 +375,7 @@ public class Order implements Serializable {
      * @param series the bar series
      * @return a SELL order
      */
-    public static Order sellAt(int index, BarSeries series) {
+    public static synchronized Order sellAt(int index, BarSeries series) {
         return new Order(index, series, OrderType.SELL);
     }
 
@@ -385,7 +385,7 @@ public class Order implements Serializable {
      * @param amount the amount to be (or that was) sold
      * @return a SELL order
      */
-    public static Order sellAt(int index, Num price, Num amount) {
+    public static synchronized Order sellAt(int index, Num price, Num amount) {
         return new Order(index, OrderType.SELL, price, amount);
     }
 
@@ -396,7 +396,7 @@ public class Order implements Serializable {
      * @param transactionCostModel the cost model for order execution
      * @return a SELL order
      */
-    public static Order sellAt(int index, Num price, Num amount, CostModel transactionCostModel) {
+    public static synchronized Order sellAt(int index, Num price, Num amount, CostModel transactionCostModel) {
         return new Order(index, OrderType.SELL, price, amount, transactionCostModel);
     }
 
@@ -406,7 +406,7 @@ public class Order implements Serializable {
      * @param amount the amount to be (or that was) bought
      * @return a SELL order
      */
-    public static Order sellAt(int index, BarSeries series, Num amount) {
+    public static synchronized Order sellAt(int index, BarSeries series, Num amount) {
         return new Order(index, series, OrderType.SELL, amount);
     }
 
@@ -417,7 +417,7 @@ public class Order implements Serializable {
      * @param transactionCostModel the cost model for order execution
      * @return a SELL order
      */
-    public static Order sellAt(int index, BarSeries series, Num amount, CostModel transactionCostModel) {
+    public static synchronized Order sellAt(int index, BarSeries series, Num amount, CostModel transactionCostModel) {
         return new Order(index, series, OrderType.SELL, amount, transactionCostModel);
     }
 

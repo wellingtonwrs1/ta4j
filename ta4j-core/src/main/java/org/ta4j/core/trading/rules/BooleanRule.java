@@ -55,7 +55,7 @@ public class BooleanRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         traceIsSatisfied(index, satisfied);
         return satisfied;
     }

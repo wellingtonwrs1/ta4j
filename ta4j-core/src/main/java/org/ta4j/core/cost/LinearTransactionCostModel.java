@@ -52,7 +52,7 @@ public class LinearTransactionCostModel implements CostModel {
      *                     LinearTransactionCostModel)
      * @return the absolute order cost
      */
-    public Num calculate(Trade trade, int currentIndex) {
+    public synchronized Num calculate(Trade trade, int currentIndex) {
         return this.calculate(trade);
     }
 
@@ -62,7 +62,7 @@ public class LinearTransactionCostModel implements CostModel {
      * @param trade the trade
      * @return the absolute order cost
      */
-    public Num calculate(Trade trade) {
+    public synchronized Num calculate(Trade trade) {
         Num totalTradeCost = null;
         Order entryOrder = trade.getEntry();
         if (entryOrder != null) {
@@ -80,7 +80,7 @@ public class LinearTransactionCostModel implements CostModel {
      * @param amount order amount
      * @return the absolute order transaction cost
      */
-    public Num calculate(Num price, Num amount) {
+    public synchronized Num calculate(Num price, Num amount) {
         return amount.numOf(feePerTrade).multipliedBy(price).multipliedBy(amount);
     }
 
@@ -89,7 +89,7 @@ public class LinearTransactionCostModel implements CostModel {
      * 
      * @param otherModel model to compare with
      */
-    public boolean equals(CostModel otherModel) {
+    public synchronized boolean equals(CostModel otherModel) {
         boolean equality = false;
         if (this.getClass().equals(otherModel.getClass())) {
             equality = ((LinearTransactionCostModel) otherModel).feePerTrade == this.feePerTrade;

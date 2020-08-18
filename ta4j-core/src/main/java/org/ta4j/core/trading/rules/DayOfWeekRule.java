@@ -49,7 +49,7 @@ public class DayOfWeekRule extends AbstractRule {
 	}
 
 	@Override
-	public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+	public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
 		ZonedDateTime dateTime = this.timeIndicator.getValue(index);
 		boolean satisfied = daysOfWeekSet.contains(dateTime.getDayOfWeek());
 

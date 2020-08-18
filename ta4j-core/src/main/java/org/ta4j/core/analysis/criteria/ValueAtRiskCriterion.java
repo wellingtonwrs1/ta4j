@@ -54,13 +54,13 @@ public class ValueAtRiskCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         Returns returns = new Returns(series, tradingRecord, Returns.ReturnType.LOG);
         return calculateVaR(returns, confidence);
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         if (trade != null && trade.isClosed()) {
             Returns returns = new Returns(series, trade, Returns.ReturnType.LOG);
             return calculateVaR(returns, confidence);
@@ -98,7 +98,7 @@ public class ValueAtRiskCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         // because it represents a loss, VaR is non-positive
         return criterionValue1.isGreaterThan(criterionValue2);
     }

@@ -36,7 +36,7 @@ import org.ta4j.core.num.Num;
 public class AverageProfitableTradesCriterion extends AbstractAnalysisCriterion {
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         return isProfitableTrade(series, trade) ? series.numOf(1) : series.numOf(0);
     }
 
@@ -48,7 +48,7 @@ public class AverageProfitableTradesCriterion extends AbstractAnalysisCriterion 
         return false;
     }
 
-    private Num calculateResult(BarSeries series, Trade trade) {
+    private synchronized Num calculateResult(BarSeries series, Trade trade) {
         int entryIndex = trade.getEntry().getIndex();
         int exitIndex = trade.getExit().getIndex();
         if (trade.getEntry().isBuy()) {
@@ -61,13 +61,13 @@ public class AverageProfitableTradesCriterion extends AbstractAnalysisCriterion 
     }
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         long numberOfProfitable = tradingRecord.getTrades().stream().filter(t -> isProfitableTrade(series, t)).count();
         return series.numOf(numberOfProfitable).dividedBy(series.numOf(tradingRecord.getTradeCount()));
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isGreaterThan(criterionValue2);
     }
 }

@@ -50,7 +50,7 @@ public class RWILowIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         if (index - barCount + 1 < getBarSeries().getBeginIndex()) {
             return NaN.NaN;
         }
@@ -63,7 +63,7 @@ public class RWILowIndicator extends CachedIndicator<Num> {
         return minRWIL;
     }
 
-    private Num calcRWIHFor(final int index, final int n) {
+    private synchronized Num calcRWIHFor(final int index, final int n) {
         BarSeries series = getBarSeries();
         Num low = series.getBar(index).getLowPrice();
         Num highN = series.getBar(index + 1 - n).getHighPrice();

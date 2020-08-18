@@ -50,7 +50,7 @@ public class RAVIIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num shortMA = shortSma.getValue(index);
         Num longMA = longSma.getValue(index);
         return shortMA.minus(longMA).dividedBy(longMA).multipliedBy(numOf(100));

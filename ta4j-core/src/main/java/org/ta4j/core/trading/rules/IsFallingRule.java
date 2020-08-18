@@ -67,7 +67,7 @@ public class IsFallingRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         if (minStrenght >= 1) {
             minStrenght = 0.99;
         }

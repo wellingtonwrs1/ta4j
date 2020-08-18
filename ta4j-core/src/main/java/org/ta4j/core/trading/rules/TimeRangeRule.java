@@ -47,7 +47,7 @@ public class TimeRangeRule extends AbstractRule {
 	}
 	
 	@Override
-	public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+	public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
 		boolean satisfied = false;
 		ZonedDateTime dateTime = this.timeIndicator.getValue(index);
     	LocalTime localTime = dateTime.toLocalTime();

@@ -127,7 +127,7 @@ public class DecimalTransformIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
 
         Num val = indicator.getValue(index);
 

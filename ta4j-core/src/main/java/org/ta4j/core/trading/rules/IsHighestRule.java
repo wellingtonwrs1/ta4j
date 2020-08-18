@@ -57,7 +57,7 @@ public class IsHighestRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         HighestValueIndicator highest = new HighestValueIndicator(ref, barCount);
         Num highestVal = highest.getValue(index);
         Num refVal = ref.getValue(index);

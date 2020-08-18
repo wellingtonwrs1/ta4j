@@ -84,7 +84,7 @@ public class IchimokuSenkouSpanBIndicator extends CachedIndicator<Num> {
     
     
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         int spanIndex = index - offset + 1;
         if (spanIndex >= getBarSeries().getBeginIndex()) {
         	return lineIndicator.getValue(spanIndex);

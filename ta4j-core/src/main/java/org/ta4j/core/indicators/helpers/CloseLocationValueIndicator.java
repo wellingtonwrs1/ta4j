@@ -43,7 +43,7 @@ public class CloseLocationValueIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         final Bar bar = getBarSeries().getBar(index);
         final Num low = bar.getLowPrice();
         final Num high = bar.getHighPrice();

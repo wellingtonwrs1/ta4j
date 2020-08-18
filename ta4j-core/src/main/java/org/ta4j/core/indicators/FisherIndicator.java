@@ -158,7 +158,7 @@ public class FisherIndicator extends RecursiveCachedIndicator<Num> {
             private static final long serialVersionUID = 1242564751445450654L;
 
             @Override
-            protected Num calculate(int index) {
+            protected synchronized Num calculate(int index) {
                 if (index <= 0) {
                     return numOf(0);
                 }
@@ -177,7 +177,7 @@ public class FisherIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         if (index <= 0) {
             return numOf(0);
         }

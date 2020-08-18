@@ -58,7 +58,7 @@ public class StandardReversalIndicator extends RecursiveCachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         List<Integer> barsOfPreviousPeriod = pivotPointIndicator.getBarsOfPreviousPeriod(index);
         if (barsOfPreviousPeriod.isEmpty()) {
             return NaN;
@@ -82,7 +82,7 @@ public class StandardReversalIndicator extends RecursiveCachedIndicator<Num> {
 
     }
 
-    private Num calculateR3(List<Integer> barsOfPreviousPeriod, int index) {
+    private synchronized Num calculateR3(List<Integer> barsOfPreviousPeriod, int index) {
         Bar bar = getBarSeries().getBar(barsOfPreviousPeriod.get(0));
         Num low = bar.getLowPrice();
         Num high = bar.getHighPrice();
@@ -93,7 +93,7 @@ public class StandardReversalIndicator extends RecursiveCachedIndicator<Num> {
         return high.plus(numOf(2).multipliedBy((pivotPointIndicator.getValue(index).minus(low))));
     }
 
-    private Num calculateR2(List<Integer> barsOfPreviousPeriod, int index) {
+    private synchronized Num calculateR2(List<Integer> barsOfPreviousPeriod, int index) {
         Bar bar = getBarSeries().getBar(barsOfPreviousPeriod.get(0));
         Num low = bar.getLowPrice();
         Num high = bar.getHighPrice();
@@ -104,7 +104,7 @@ public class StandardReversalIndicator extends RecursiveCachedIndicator<Num> {
         return pivotPointIndicator.getValue(index).plus((high.minus(low)));
     }
 
-    private Num calculateR1(List<Integer> barsOfPreviousPeriod, int index) {
+    private synchronized Num calculateR1(List<Integer> barsOfPreviousPeriod, int index) {
         Num low = getBarSeries().getBar(barsOfPreviousPeriod.get(0)).getLowPrice();
         for (int i : barsOfPreviousPeriod) {
             low = (getBarSeries().getBar(i).getLowPrice()).min(low);
@@ -112,7 +112,7 @@ public class StandardReversalIndicator extends RecursiveCachedIndicator<Num> {
         return numOf(2).multipliedBy(pivotPointIndicator.getValue(index)).minus(low);
     }
 
-    private Num calculateS1(List<Integer> barsOfPreviousPeriod, int index) {
+    private synchronized Num calculateS1(List<Integer> barsOfPreviousPeriod, int index) {
         Num high = getBarSeries().getBar(barsOfPreviousPeriod.get(0)).getHighPrice();
         for (int i : barsOfPreviousPeriod) {
             high = (getBarSeries().getBar(i).getHighPrice()).max(high);
@@ -120,7 +120,7 @@ public class StandardReversalIndicator extends RecursiveCachedIndicator<Num> {
         return numOf(2).multipliedBy(pivotPointIndicator.getValue(index)).minus(high);
     }
 
-    private Num calculateS2(List<Integer> barsOfPreviousPeriod, int index) {
+    private synchronized Num calculateS2(List<Integer> barsOfPreviousPeriod, int index) {
         Bar bar = getBarSeries().getBar(barsOfPreviousPeriod.get(0));
         Num high = bar.getHighPrice();
         Num low = bar.getLowPrice();
@@ -131,7 +131,7 @@ public class StandardReversalIndicator extends RecursiveCachedIndicator<Num> {
         return pivotPointIndicator.getValue(index).minus((high.minus(low)));
     }
 
-    private Num calculateS3(List<Integer> barsOfPreviousPeriod, int index) {
+    private synchronized Num calculateS3(List<Integer> barsOfPreviousPeriod, int index) {
         Bar bar = getBarSeries().getBar(barsOfPreviousPeriod.get(0));
         Num high = bar.getHighPrice();
         Num low = bar.getLowPrice();

@@ -71,7 +71,7 @@ public class AroonDownIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         if (getBarSeries().getBar(index).getLowPrice().isNaN())
             return NaN;
 

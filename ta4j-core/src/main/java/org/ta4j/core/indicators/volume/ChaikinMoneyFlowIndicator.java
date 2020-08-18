@@ -53,7 +53,7 @@ public class ChaikinMoneyFlowIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         int startIndex = Math.max(0, index - barCount + 1);
         Num sumOfMoneyFlowVolume = numOf(0);
         for (int i = startIndex; i <= index; i++) {
@@ -68,7 +68,7 @@ public class ChaikinMoneyFlowIndicator extends CachedIndicator<Num> {
      * @param index the bar index
      * @return the money flow volume for the i-th period/bar
      */
-    private Num getMoneyFlowVolume(int index) {
+    private synchronized Num getMoneyFlowVolume(int index) {
         return clvIndicator.getValue(index).multipliedBy(getBarSeries().getBar(index).getVolume());
     }
 

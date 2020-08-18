@@ -70,7 +70,7 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
     }
 
     @Override
-    public T getValue(int index) {
+    public synchronized T getValue(int index) {
         BarSeries series = getBarSeries();
         if (series == null) {
             // Series is null; the indicator doesn't need cache.
@@ -128,7 +128,7 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
         return result;
     }
 
-    private T getResult(int resultInnerIndex) {
+    private synchronized T getResult(int resultInnerIndex) {
         try {
             return results.get(resultInnerIndex);
         } catch (Exception e) {
@@ -149,7 +149,7 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
      * @param index     the index to increase length to
      * @param maxLength the maximum length of the results buffer
      */
-    private void increaseLengthTo(int index, int maxLength) {
+    private synchronized void increaseLengthTo(int index, int maxLength) {
         if (highestResultIndex > -1) {
             int newResultsCount = Math.min(index - highestResultIndex, maxLength);
             if (newResultsCount == maxLength) {
@@ -172,7 +172,7 @@ public abstract class CachedIndicator<T> extends AbstractIndicator<T> {
      *
      * @param maximumResultCount the number of results to keep
      */
-    private void removeExceedingResults(int maximumResultCount) {
+    private synchronized void removeExceedingResults(int maximumResultCount) {
         int resultCount = results.size();
         if (resultCount > maximumResultCount) {
             // Removing old results

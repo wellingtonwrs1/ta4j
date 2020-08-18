@@ -46,7 +46,7 @@ public class AccelerationDecelerationIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return awesome.getValue(index).minus(sma.getValue(index));
     }
 }

@@ -57,7 +57,7 @@ public class BollingerBandWidthIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return bbu.getValue(index).minus(bbl.getValue(index)).dividedBy(bbm.getValue(index)).multipliedBy(hundred);
     }
 }

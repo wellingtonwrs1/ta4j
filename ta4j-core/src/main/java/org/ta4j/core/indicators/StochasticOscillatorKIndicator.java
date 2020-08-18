@@ -61,7 +61,7 @@ public class StochasticOscillatorKIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         HighestValueIndicator highestHigh = new HighestValueIndicator(highPriceIndicator, barCount);
         LowestValueIndicator lowestMin = new LowestValueIndicator(lowPriceIndicator, barCount);
 

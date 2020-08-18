@@ -50,7 +50,7 @@ public class UpperShadowIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Bar t = getBarSeries().getBar(index);
         final Num openPrice = t.getOpenPrice();
         final Num closePrice = t.getClosePrice();

@@ -55,7 +55,7 @@ public class CorrelationCoefficientIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         Num cov = covariance.getValue(index);
         Num var1 = variance1.getValue(index);
         Num var2 = variance2.getValue(index);

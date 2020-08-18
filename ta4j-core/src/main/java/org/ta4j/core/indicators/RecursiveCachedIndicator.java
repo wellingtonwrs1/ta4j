@@ -63,7 +63,7 @@ public abstract class RecursiveCachedIndicator<T> extends CachedIndicator<T> {
     }
 
     @Override
-    public T getValue(int index) {
+    public synchronized T getValue(int index) {
         BarSeries series = getBarSeries();
         if (series != null) {
             final int seriesEndIndex = series.getEndIndex();

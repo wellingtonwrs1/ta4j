@@ -46,7 +46,7 @@ public class FixedRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         for (int idx : indexes) {
             if (idx == index) {

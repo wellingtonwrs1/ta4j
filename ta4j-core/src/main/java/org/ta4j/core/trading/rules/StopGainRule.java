@@ -93,7 +93,7 @@ public class StopGainRule extends AbstractRule {
     }
 
     @Override
-    public boolean isSatisfied(int index, TradingRecord tradingRecord) {
+    public synchronized boolean isSatisfied(int index, TradingRecord tradingRecord) {
         boolean satisfied = false;
         // No trading history or no trade opened, no loss
         if (tradingRecord != null) {
@@ -114,35 +114,38 @@ public class StopGainRule extends AbstractRule {
         return satisfied;
     }
 
-    private boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
+    private synchronized boolean isSellGainSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
             return calculatePips(entryPrice, currentPrice, true);
+        } else {
+            Num lossRatioThreshold = HUNDRED.minus(gainValue).dividedBy(HUNDRED);
+            Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
+            return currentPrice.isLessThanOrEqual(threshold);
         }
-        Num lossRatioThreshold = HUNDRED.minus(gainValue).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isLessThanOrEqual(threshold);
     }
 
-    private boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
+    private synchronized boolean isBuyGainSatisfied(Num entryPrice, Num currentPrice) {
         if (pips) {
             return calculatePips(entryPrice, currentPrice, false);
+        } else {
+            Num lossRatioThreshold = HUNDRED.plus(gainValue).dividedBy(HUNDRED);
+            Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
+            return currentPrice.isGreaterThanOrEqual(threshold);
         }
-        Num lossRatioThreshold = HUNDRED.plus(gainValue).dividedBy(HUNDRED);
-        Num threshold = entryPrice.multipliedBy(lossRatioThreshold);
-        return currentPrice.isGreaterThanOrEqual(threshold);
     }
 
-    private boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {
+    private synchronized boolean calculatePips(Num entryPrice, Num currentPrice, boolean isSell) {
         BigDecimal entry = ((BigDecimal) entryPrice.getDelegate());
         BigDecimal current = ((BigDecimal) currentPrice.getDelegate());
         int position = pipPosition > 0 ? pipPosition : entry.scale();
         if (isSell) {
             return entry.subtract(current).movePointRight(position).compareTo((BigDecimal) gainValue.getDelegate()) >= 0;
+        } else {
+            return current.subtract(entry).movePointRight(position).compareTo((BigDecimal) gainValue.getDelegate()) >= 0;
         }
-        return current.subtract(entry).movePointRight(position).compareTo((BigDecimal) gainValue.getDelegate()) >= 0;
     }
 
-    public void setGainValue(Num gainValue) {
+    public synchronized void setGainValue(Num gainValue) {
         this.gainValue = gainValue;
     }
 }

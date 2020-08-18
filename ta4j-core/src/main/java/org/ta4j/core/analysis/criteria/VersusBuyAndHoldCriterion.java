@@ -46,7 +46,7 @@ public class VersusBuyAndHoldCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         TradingRecord fakeRecord = new BaseTradingRecord();
         fakeRecord.enter(series.getBeginIndex());
         fakeRecord.exit(series.getEndIndex());
@@ -55,7 +55,7 @@ public class VersusBuyAndHoldCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         TradingRecord fakeRecord = new BaseTradingRecord();
         fakeRecord.enter(series.getBeginIndex());
         fakeRecord.exit(series.getEndIndex());
@@ -64,7 +64,7 @@ public class VersusBuyAndHoldCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isGreaterThan(criterionValue2);
     }
 }

@@ -41,7 +41,7 @@ public class BullishIndicator extends CachedIndicator<Boolean> {
     }
 
     @Override
-    protected Boolean calculate(int index) {
+    protected synchronized Boolean calculate(int index) {
         return getBarSeries().getBar(index).isBullish();
     }
 }

@@ -72,12 +72,12 @@ public class LinearTransactionCostCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public Num calculate(BarSeries series, Trade trade) {
+    public synchronized Num calculate(BarSeries series, Trade trade) {
         return getTradeCost(series, trade, series.numOf(initialAmount));
     }
 
     @Override
-    public Num calculate(BarSeries series, TradingRecord tradingRecord) {
+    public synchronized Num calculate(BarSeries series, TradingRecord tradingRecord) {
         Num totalCosts = series.numOf(0);
         Num tradedAmount = series.numOf(initialAmount);
 
@@ -103,7 +103,7 @@ public class LinearTransactionCostCriterion extends AbstractAnalysisCriterion {
     }
 
     @Override
-    public boolean betterThan(Num criterionValue1, Num criterionValue2) {
+    public synchronized boolean betterThan(Num criterionValue1, Num criterionValue2) {
         return criterionValue1.isLessThan(criterionValue2);
     }
 
@@ -112,7 +112,7 @@ public class LinearTransactionCostCriterion extends AbstractAnalysisCriterion {
      * @param tradedAmount the traded amount for the order
      * @return the absolute order cost
      */
-    private Num getOrderCost(Order order, Num tradedAmount) {
+    private synchronized Num getOrderCost(Order order, Num tradedAmount) {
         Num orderCost = tradedAmount.numOf(0);
         if (order != null) {
             return tradedAmount.numOf(a).multipliedBy(tradedAmount).plus(tradedAmount.numOf(b));
@@ -126,7 +126,7 @@ public class LinearTransactionCostCriterion extends AbstractAnalysisCriterion {
      * @param initialAmount the initially traded amount for the trade
      * @return the absolute total cost of all orders in the trade
      */
-    private Num getTradeCost(BarSeries series, Trade trade, Num initialAmount) {
+    private synchronized Num getTradeCost(BarSeries series, Trade trade, Num initialAmount) {
         Num totalTradeCost = series.numOf(0);
         if (trade != null) {
             if (trade.getEntry() != null) {

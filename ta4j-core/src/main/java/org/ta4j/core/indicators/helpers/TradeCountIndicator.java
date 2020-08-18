@@ -38,7 +38,7 @@ public class TradeCountIndicator extends CachedIndicator<Integer> {
     }
 
     @Override
-    protected Integer calculate(int index) {
+    protected synchronized Integer calculate(int index) {
         return getBarSeries().getBar(index).getTrades();
     }
 }

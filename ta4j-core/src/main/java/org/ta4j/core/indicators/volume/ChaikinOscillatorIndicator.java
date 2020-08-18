@@ -64,7 +64,7 @@ public class ChaikinOscillatorIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         return emaShort.getValue(index).minus(emaLong.getValue(index));
     }
 }

@@ -51,12 +51,12 @@ public class FixedIndicator<T> extends AbstractIndicator<T> {
         this.values.addAll(Arrays.asList(values));
     }
 
-    public void addValue(T value) {
+    public synchronized void addValue(T value) {
         this.values.add(value);
     }
 
     @Override
-    public T getValue(int index) {
+    public synchronized T getValue(int index) {
         return values.get(index);
     }
 

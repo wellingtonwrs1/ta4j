@@ -55,7 +55,7 @@ public class IIIIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         if (index == getBarSeries().getBeginIndex()) {
             return numOf(0);
         }

@@ -70,7 +70,7 @@ public class IchimokuChikouSpanIndicator extends CachedIndicator<Num> {
     }
 
     @Override
-    protected Num calculate(int index) {
+    protected synchronized Num calculate(int index) {
         int spanIndex = index + timeDelay;
         if (spanIndex <= getBarSeries().getEndIndex()) {
             return closePriceIndicator.getValue(spanIndex);
